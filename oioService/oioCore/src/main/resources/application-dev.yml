@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    # 使用Druid数据源
+    url: jdbc:mysql://192.168.3.15:3306/oio_dev?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai #jdbc:mysql://111.230.240.248:3306/scan_ordering_test?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root #root
+    password: root #37ce8c9d93aa47a8
+    druid:
+      filters: stat
+      maxActive: 20
+      initialSize: 1
+      maxWait: 60000
+      minIdle: 1
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: select 'x'
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxOpenPreparedStatements: 20
