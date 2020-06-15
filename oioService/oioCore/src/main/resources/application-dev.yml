@@ -18,3 +18,28 @@ spring:
       testOnReturn: false
       poolPreparedStatements: true
       maxOpenPreparedStatements: 20
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.3.15:8848
+
+  main:
+    allow-bean-definition-overriding: true
+
+dubbo:
+  application:
+    id: oio-core
+    qos-port: 22222
+    qos-enable: true
+    name: oio-core
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 22334
+    status: server
+  registry:
+    address: spring-cloud://192.168.3.15
+  scan:
+    base-packages: indi.dbfmp.oio.core
+  cloud:
+    subscribed-services: oio-core

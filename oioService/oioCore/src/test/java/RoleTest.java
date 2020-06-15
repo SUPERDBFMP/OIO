@@ -1,7 +1,7 @@
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import indi.dbfmp.oio.core.OioCoreMain;
-import indi.dbfmp.oio.core.entity.Roles;
-import indi.dbfmp.oio.core.service.impl.RolesServiceImpl;
+import indi.dbfmp.oio.core.innerService.impl.IRolesServiceImpl;
+import indi.dbfmp.oio.inner.entity.Roles;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class RoleTest {
 
     @Autowired
-    private RolesServiceImpl rolesService;
+    private IRolesServiceImpl rolesService;
 
     @Test
     public void testRoles() {

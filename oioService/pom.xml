@@ -11,6 +11,8 @@
     <modules>
         <module>oioService-api</module>
         <module>oioCore</module>
+        <module>oioServiceInner-api</module>
+        <module>oioAuth</module>
     </modules>
 
     <properties>

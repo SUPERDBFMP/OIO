@@ -1,0 +1,20 @@
+package indi.dbfmp.oio.core.innerService.impl;
+
+import indi.dbfmp.oio.core.mapper.PositionRoleMapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import indi.dbfmp.oio.core.innerService.IPositionRoleService;
+import indi.dbfmp.oio.inner.entity.PositionRole;
+import org.springframework.stereotype.Service;
+
+/**
+ * <p>
+ *  服务实现类
+ * </p>
+ *
+ * @author dbfmp
+ * @since 2020-06-14
+ */
+@Service
+public class PositionRoleServiceImpl extends ServiceImpl<PositionRoleMapper, PositionRole> implements IPositionRoleService {
+
+}

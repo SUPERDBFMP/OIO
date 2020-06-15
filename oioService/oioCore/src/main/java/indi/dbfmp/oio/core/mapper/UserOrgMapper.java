@@ -1,7 +1,7 @@
 package indi.dbfmp.oio.core.mapper;
 
-import indi.dbfmp.oio.core.entity.UserOrg;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import indi.dbfmp.oio.inner.entity.UserOrg;
 
 /**
  * <p>

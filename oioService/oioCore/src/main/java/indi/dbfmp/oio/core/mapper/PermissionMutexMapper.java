@@ -1,7 +1,7 @@
 package indi.dbfmp.oio.core.mapper;
 
-import indi.dbfmp.oio.core.entity.PermissionMutex;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import indi.dbfmp.oio.inner.entity.PermissionMutex;
 
 /**
  * <p>
