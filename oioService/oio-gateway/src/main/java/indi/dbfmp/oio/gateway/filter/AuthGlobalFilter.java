@@ -39,7 +39,7 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class AuthGlobalFilter implements GlobalFilter {
 
-    @Reference(check = false)
+    @Reference(check = false,group = "${spring.profiles.active}")
     private JwtTokenService jwtTokenService;
 
     @Override

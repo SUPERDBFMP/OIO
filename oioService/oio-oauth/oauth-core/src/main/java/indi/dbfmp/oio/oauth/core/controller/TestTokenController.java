@@ -37,10 +37,9 @@ public class TestTokenController {
                 .appType("web")
                 .userId("ht")
                 .userName("dbfmp")
-                .exp(System.currentTimeMillis()+50000)
                 .build();
         try {
-            return CommonResult.success(JwtTokenUtil.generateTokenByRSA(JSONObject.toJSONString(payloadDto),JwtTokenUtil.getDefaultRSAKey(jwtRsaKeyPath,jwtRsaKey)));
+            return CommonResult.success(JwtTokenUtil.generateTokenByRSA(payloadDto,JwtTokenUtil.getDefaultRSAKey(jwtRsaKeyPath,jwtRsaKey),300));
         } catch (JOSEException | MalformedURLException e) {
             log.error("生成token异常",e);
             return CommonResult.failed("生成token异常");

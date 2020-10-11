@@ -1,4 +1,4 @@
-package indi.dbfmp.oio.oauth.core.service;
+package indi.dbfmp.oio.oauth.core.service.impl;
 
 import com.nimbusds.jose.JOSEException;
 import inid.dbfmp.oauth.api.dto.PayloadDto;
@@ -21,7 +21,7 @@ import java.text.ParseException;
  * @since 2020/10/11 4:49 下午
  */
 @Component
-@Service
+@Service(group = "${spring.profiles.active}")
 public class JwtTokenServiceImpl implements JwtTokenService {
 
     @Value("${jwtRsaKeyPath}")

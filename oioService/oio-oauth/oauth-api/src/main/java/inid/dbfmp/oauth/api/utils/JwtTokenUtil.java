@@ -1,6 +1,7 @@
 package inid.dbfmp.oauth.api.utils;
 
 import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
@@ -40,13 +41,16 @@ public class JwtTokenUtil {
         return new RSAKey.Builder(publicKey).privateKey(privateKey).build();
     }
 
-    public static String generateTokenByRSA(String payloadStr, RSAKey rsaKey) throws JOSEException {
+    public static String generateTokenByRSA(PayloadDto payloadDto, RSAKey rsaKey,int expireTime) throws JOSEException {
         //创建JWS头，设置签名算法和类型
         JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.RS256)
                 .type(JOSEObjectType.JWT)
                 .build();
+        long now = System.currentTimeMillis();
+        payloadDto.setExp(now + (expireTime * 1000));
+        payloadDto.setIat(now);
         //将负载信息封装到Payload中
-        Payload payload = new Payload(payloadStr);
+        Payload payload = new Payload(JSONObject.toJSONString(payloadDto));
         //创建JWS对象
         JWSObject jwsObject = new JWSObject(jwsHeader, payload);
         //创建RSA签名器

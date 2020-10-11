@@ -5,6 +5,10 @@ spring:
     active: '@profileActive@'
   application:
     name: oio-oauth-core
+  cloud:
+    nacos:
+      discovery:
+        group: ${spring.profiles.active}
 
 dubbo:
   scan:
