@@ -1,9 +1,0 @@
-server:
-  port: 9000
-
-spring:
-  profiles:
-    #开发改"dev" 推送线上改"prod"
-    active: @profileActive@
-  application:
-    name: oio-auth
