@@ -1,0 +1,41 @@
+server:
+  port: 9201
+spring:
+  profiles:
+    active: '@profileActive@'
+  application:
+    name: oio-gateway
+  cloud:
+    gateway:
+      routes: #配置路由路径
+        - id: oauth2-api-route
+          uri: lb://micro-oauth2-api
+          predicates:
+            - Path=/api/**
+          filters:
+            - StripPrefix=1
+        - id: oauth2-auth-route
+          uri: lb://micro-oauth2-auth
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=1
+        - id: oio-oauth-core-route
+          uri: lb://oio-oauth-core
+          predicates:
+            - Path=/oauth/**
+          filters:
+            - StripPrefix=1
+      discovery:
+        locator:
+          enabled: true #开启从注册中心动态创建路由的功能
+          lower-case-service-id: true #使用小写服务名，默认是大写
+
+dubbo:
+  scan:
+    base-packages: indi.dbfmp.oio.gateway
+  protocol:
+    name: dubbo
+    port: -1
+  cloud:
+    subscribed-services: oio-oauth-core

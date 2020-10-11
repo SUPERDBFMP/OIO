@@ -1,0 +1,22 @@
+server:
+  port: 9301
+spring:
+  profiles:
+    active: '@profileActive@'
+  application:
+    name: oio-oauth-core
+
+dubbo:
+  scan:
+    base-packages: indi.dbfmp.oio.oauth.core
+  protocol:
+    name: dubbo
+    port: -1
+  cloud:
+    subscribed-services: oio-oauth-core
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

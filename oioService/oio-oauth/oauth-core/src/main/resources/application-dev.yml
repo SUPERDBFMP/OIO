@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.3.20:8848
+
+
+jwtRsaKeyPath: /Users/dbfmp/myWork/OIO/oioService/oio-oauth/oauth-core/src/main/resources/jwt.jks
+jwtRsaKey: 123456
