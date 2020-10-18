@@ -149,7 +149,7 @@ public class CodeGenerator {
         // 写于父类中的公共字段
         strategy.setSuperEntityColumns("id","create_by","create_date","update_by","update_date","remarks","deleted","version");
         //strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
-        strategy.setInclude("org");
+        strategy.setInclude("group_role","groups","org_role","org_role","permission","position","position_role","role_permission","roles","user_org","user_position");
         strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix(pc.getModuleName() + "_");
         mpg.setStrategy(strategy);
