@@ -42,7 +42,7 @@ import java.text.ParseException;
  */
 @Slf4j
 @Service
-public class OauthService {
+public class TokenService {
 
     @Autowired
     private IClientInnerService clientInnerService;

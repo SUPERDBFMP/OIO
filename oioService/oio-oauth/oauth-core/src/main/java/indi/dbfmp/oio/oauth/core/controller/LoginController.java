@@ -1,11 +1,10 @@
 package indi.dbfmp.oio.oauth.core.controller;
 
 import cn.hutool.core.util.StrUtil;
-import indi.dbfmp.oio.oauth.core.dto.redisDto.OauthCodeDto;
 import indi.dbfmp.oio.oauth.core.dto.webDto.AuthCodeTokenDto;
 import indi.dbfmp.oio.oauth.core.dto.webDto.RefreshDto;
 import indi.dbfmp.oio.oauth.core.dto.webDto.TokenDto;
-import indi.dbfmp.oio.oauth.core.service.impl.OauthService;
+import indi.dbfmp.oio.oauth.core.service.impl.TokenService;
 import indi.dbfmp.oio.oauth.core.dto.webDto.LoginDto;
 import inid.dbfmp.common.dto.CommonResult;
 import inid.dbfmp.oauth.api.dto.VerifyTokenDto;
@@ -31,7 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class LoginController {
 
     @Autowired
-    private OauthService oauthService;
+    private TokenService tokenService;
 
     @GetMapping("/authCode")
     public ModelAndView getAuthCode(@RequestParam("client_id") String clientId,@RequestParam("redirect_url") String redirectUrl,@RequestParam("app_type") String appType) {
@@ -53,7 +52,7 @@ public class LoginController {
     @Validated
     @ResponseBody
     public CommonResult<?> loginByPwd(@RequestBody LoginDto loginDto) {
-        String code = oauthService.getOauthCode(loginDto.getUserName(),loginDto.getPwd(),loginDto.getAppType(),loginDto.getClientId());
+        String code = tokenService.getOauthCode(loginDto.getUserName(),loginDto.getPwd(),loginDto.getAppType(),loginDto.getClientId());
         String redirectUrl = loginDto.getRedirectUrl() + "?code=" + code;
         return CommonResult.success(redirectUrl);
     }
@@ -63,7 +62,7 @@ public class LoginController {
     @ResponseBody
     public CommonResult<?> getToken(@RequestBody AuthCodeTokenDto authCodeTokenDto) {
         try {
-            TokenDto tokenDto = oauthService.getToken(authCodeTokenDto);
+            TokenDto tokenDto = tokenService.getToken(authCodeTokenDto);
             return CommonResult.success(tokenDto);
         } catch (Exception e) {
             log.error("操作失败",e);
@@ -76,7 +75,7 @@ public class LoginController {
     @ResponseBody
     public CommonResult<?> verifyToken(@RequestBody TokenDto tokenDto) {
         try {
-            VerifyTokenDto verifyTokenDto = oauthService.verifyToken(tokenDto.getToken());
+            VerifyTokenDto verifyTokenDto = tokenService.verifyToken(tokenDto.getToken());
             return CommonResult.success(verifyTokenDto);
         } catch (Exception e) {
             log.error("操作失败",e);
@@ -89,7 +88,7 @@ public class LoginController {
     @ResponseBody
     public CommonResult<?> refreshToken(@RequestBody RefreshDto refreshDto) {
         try {
-            TokenDto tokenDto = oauthService.refreshToken(refreshDto);
+            TokenDto tokenDto = tokenService.refreshToken(refreshDto);
             return CommonResult.success(tokenDto);
         } catch (Exception e) {
             log.error("操作失败",e);

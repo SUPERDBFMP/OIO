@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * url-角色表
+ * 用户-角色表
  * </p>
  *
  * @author dbfmp
@@ -14,14 +14,9 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UrlRole extends BaseEntity {
+public class UserRole extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 分组id
-     */
-    private String groupId;
 
     /**
      * 角色id
@@ -34,9 +29,14 @@ public class UrlRole extends BaseEntity {
     private String roleName;
 
     /**
-     * url
+     * 用户id
      */
-    private String url;
+    private String userId;
+
+    /**
+     * 分组id
+     */
+    private String groupId;
 
 
 }

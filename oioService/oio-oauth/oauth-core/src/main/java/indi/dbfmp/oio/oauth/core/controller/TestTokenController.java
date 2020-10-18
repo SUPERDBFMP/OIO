@@ -1,8 +1,7 @@
 package indi.dbfmp.oio.oauth.core.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.nimbusds.jose.JOSEException;
-import indi.dbfmp.oio.oauth.core.service.impl.OauthService;
+import indi.dbfmp.oio.oauth.core.service.impl.TokenService;
 import inid.dbfmp.common.dto.CommonResult;
 import inid.dbfmp.oauth.api.dto.PayloadDto;
 import inid.dbfmp.oauth.api.utils.JwtTokenUtil;
@@ -29,7 +28,7 @@ import java.net.MalformedURLException;
 public class TestTokenController {
 
     @Autowired
-    private OauthService oauthService;
+    private TokenService tokenService;
 
     @Value("${jwtRsaKeyPath}")
     private String jwtRsaKeyPath;
