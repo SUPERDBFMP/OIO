@@ -2,7 +2,7 @@ package indi.dbfmp.oio.oauth.core.innerService.impl;
 
 import indi.dbfmp.oio.oauth.core.entity.Client;
 import indi.dbfmp.oio.oauth.core.mapper.ClientMapper;
-import indi.dbfmp.oio.oauth.core.innerService.IClientService;
+import indi.dbfmp.oio.oauth.core.innerService.IClientInnerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2020-10-12
  */
 @Service
-public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> implements IClientService {
+public class ClientInnerServiceImpl extends ServiceImpl<ClientMapper, Client> implements IClientInnerService {
 
 }

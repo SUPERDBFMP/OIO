@@ -4,23 +4,20 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.jwk.RSAKey;
 import indi.dbfmp.oio.oauth.core.component.RedisUtil;
 import indi.dbfmp.oio.oauth.core.constants.TokenRedisConstants;
 import indi.dbfmp.oio.oauth.core.dto.redisDto.OauthCodeDto;
 import indi.dbfmp.oio.oauth.core.entity.Client;
 import indi.dbfmp.oio.oauth.core.entity.Users;
 import indi.dbfmp.oio.oauth.core.exception.CommonException;
-import indi.dbfmp.oio.oauth.core.innerService.IClientService;
-import indi.dbfmp.oio.oauth.core.innerService.IUsersService;
+import indi.dbfmp.oio.oauth.core.innerService.IClientInnerService;
+import indi.dbfmp.oio.oauth.core.innerService.IUsersInnerService;
 import inid.dbfmp.oauth.api.dto.PayloadDto;
 import inid.dbfmp.oauth.api.dto.VerifyTokenDto;
 import inid.dbfmp.oauth.api.enums.StatusEnums;
 import inid.dbfmp.oauth.api.exception.JwtExpiredException;
 import inid.dbfmp.oauth.api.exception.JwtInvalidException;
 import inid.dbfmp.oauth.api.utils.JwtTokenUtil;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -48,9 +45,9 @@ import java.text.ParseException;
 public class OauthService {
 
     @Autowired
-    private IClientService clientServiceImpl;
+    private IClientInnerService clientServiceImpl;
     @Autowired
-    private IUsersService usersServiceImpl;
+    private IUsersInnerService usersServiceImpl;
     @Autowired
     private RedisUtil redisUtil;
     @Autowired

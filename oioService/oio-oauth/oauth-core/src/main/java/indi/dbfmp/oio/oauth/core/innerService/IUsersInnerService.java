@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author dbfmp
  * @since 2020-10-12
  */
-public interface IUsersService extends IService<Users> {
+public interface IUsersInnerService extends IService<Users> {
 
 }
