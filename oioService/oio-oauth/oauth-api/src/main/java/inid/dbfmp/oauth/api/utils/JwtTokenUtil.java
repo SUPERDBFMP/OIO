@@ -41,6 +41,17 @@ public class JwtTokenUtil {
         return new RSAKey.Builder(publicKey).privateKey(privateKey).build();
     }
 
+    public static RSAKey getDefaultRSAKey(FileUrlResource fileUrlResource,String keyFileKey) throws MalformedURLException {
+        //从classpath下获取RSA秘钥对
+        KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(fileUrlResource, keyFileKey.toCharArray());
+        KeyPair keyPair = keyStoreKeyFactory.getKeyPair("jwt", keyFileKey.toCharArray());
+        //获取RSA公钥
+        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+        //获取RSA私钥
+        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+        return new RSAKey.Builder(publicKey).privateKey(privateKey).build();
+    }
+
     public static String generateTokenByRSA(PayloadDto payloadDto, RSAKey rsaKey,int expireTime) throws JOSEException {
         //创建JWS头，设置签名算法和类型
         JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.RS256)

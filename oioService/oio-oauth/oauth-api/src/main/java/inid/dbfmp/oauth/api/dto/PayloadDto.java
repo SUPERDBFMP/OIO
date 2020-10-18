@@ -31,6 +31,7 @@ public class PayloadDto implements Serializable {
     private String userName;
     private String userId;
     private String appType;
-    private List<String> authorities;
+    private String clientId;
+    private String otherTokenId;
 
 }

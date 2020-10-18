@@ -3,7 +3,19 @@ spring:
     nacos:
       discovery:
         server-addr: 192.168.3.20:8848
+  datasource:
+    # 使用Druid数据源
+    url: jdbc:mysql://192.168.3.20:3306/oio_dev?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+  redis:
+    database: 1
+    host: 192.168.3.20
 
+logging:
+  level:
+    indi.dbfmp.oio.oauth.core.mapper: error
 
 jwtRsaKeyPath: /Users/dbfmp/myWork/OIO/oioService/oio-oauth/oauth-core/src/main/resources/jwt.jks
 jwtRsaKey: 123456
+debug: false
