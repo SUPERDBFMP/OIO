@@ -16,7 +16,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  */
 @EnableDiscoveryClient
 @SpringBootApplication
-@MapperScan("indi.dbfmp")
+@MapperScan("indi.dbfmp.oio.oauth.core.mapper")
 public class OioOauthCoreApplication {
 
     public static void main(String[] args) {

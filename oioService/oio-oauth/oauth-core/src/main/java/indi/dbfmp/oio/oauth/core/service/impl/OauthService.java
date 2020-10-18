@@ -45,9 +45,9 @@ import java.text.ParseException;
 public class OauthService {
 
     @Autowired
-    private IClientInnerService clientServiceImpl;
+    private IClientInnerService clientInnerService;
     @Autowired
-    private IUsersInnerService usersServiceImpl;
+    private IUsersInnerService usersInnerService;
     @Autowired
     private RedisUtil redisUtil;
     @Autowired
@@ -65,7 +65,7 @@ public class OauthService {
 
     public String getOauthCode(String username, String pwd, String appType, String clientId) {
         //1、查询有效client
-        Client queryClient = clientServiceImpl.getOne(new LambdaQueryWrapper<Client>().eq(Client::getClientId, clientId).select(Client::getAccessFlag));
+        Client queryClient = clientInnerService.getOne(new LambdaQueryWrapper<Client>().eq(Client::getClientId, clientId).select(Client::getAccessFlag));
         if (null == queryClient) {
             log.info("getOauthCode->无效的ClientId:{}", clientId);
             throw new CommonException("无效的客户端！");
@@ -75,7 +75,7 @@ public class OauthService {
             throw new CommonException("客户端被封禁，请联系管理员！");
         }
         //查询用户
-        Users queryUser = usersServiceImpl.getOne(new LambdaQueryWrapper<Users>().eq(Users::getPhone, username)
+        Users queryUser = usersInnerService.getOne(new LambdaQueryWrapper<Users>().eq(Users::getPhone, username)
                 .select(Users::getPassword, Users::getLoginFlag, Users::getNickName, Users::getUserId));
         //todo 使用加密的密码
         if (null == queryUser || !queryUser.getPassword().equals(pwd)) {
@@ -115,7 +115,7 @@ public class OauthService {
             throw new CommonException("不要并发获取token");
         }
         //查询client数据
-        Client queryClient = clientServiceImpl.getOne(new LambdaQueryWrapper<Client>().eq(Client::getClientId, authCodeTokenDto.getClientId()).select(Client::getClientSecretKey));
+        Client queryClient = clientInnerService.getOne(new LambdaQueryWrapper<Client>().eq(Client::getClientId, authCodeTokenDto.getClientId()).select(Client::getClientSecretKey));
         if (null == queryClient) {
             throw new CommonException("授权客户端信息不存在！请联系管理员！");
         }
