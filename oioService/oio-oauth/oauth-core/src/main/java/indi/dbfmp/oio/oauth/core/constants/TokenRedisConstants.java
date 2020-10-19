@@ -12,7 +12,7 @@ package indi.dbfmp.oio.oauth.core.constants;
 public class TokenRedisConstants {
 
     /**
-     * ${userId}:${appType}:{clientId}
+     * ${userId}:${appType}:${clientId}
      */
     public final static String TOKEN_KEY = "Token:{}:{}:{}";
     public final static String REFRESH_TOKEN_KEY = "RefreshToken:{}:{}:{}";

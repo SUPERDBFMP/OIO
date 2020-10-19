@@ -21,17 +21,17 @@ public class UrlPermission extends BaseEntity {
     /**
      * 分组id
      */
-    private Integer groupId;
+    private String groupId;
 
     /**
      * 角色id
      */
-    private Integer permissonId;
+    private String permissionId;
 
     /**
      * 角色名
      */
-    private String permissonName;
+    private String permissionName;
 
     /**
      * url
