@@ -3,7 +3,7 @@ package indi.dbfmp.oio.gateway.filter;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
-import inid.dbfmp.common.dto.CommonResult;
+import indi.dbfmp.web.common.dto.CommonResult;
 import inid.dbfmp.oauth.api.dto.PayloadDto;
 import inid.dbfmp.oauth.api.service.JwtTokenService;
 import lombok.extern.slf4j.Slf4j;

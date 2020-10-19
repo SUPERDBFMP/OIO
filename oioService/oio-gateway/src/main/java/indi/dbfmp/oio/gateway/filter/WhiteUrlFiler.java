@@ -2,7 +2,7 @@ package indi.dbfmp.oio.gateway.filter;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import inid.dbfmp.common.dto.CommonResult;
+import indi.dbfmp.web.common.dto.CommonResult;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;

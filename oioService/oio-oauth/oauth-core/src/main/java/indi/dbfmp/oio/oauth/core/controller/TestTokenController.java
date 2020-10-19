@@ -2,7 +2,7 @@ package indi.dbfmp.oio.oauth.core.controller;
 
 import com.nimbusds.jose.JOSEException;
 import indi.dbfmp.oio.oauth.core.service.impl.TokenService;
-import inid.dbfmp.common.dto.CommonResult;
+import indi.dbfmp.web.common.dto.CommonResult;
 import inid.dbfmp.oauth.api.dto.PayloadDto;
 import inid.dbfmp.oauth.api.utils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;

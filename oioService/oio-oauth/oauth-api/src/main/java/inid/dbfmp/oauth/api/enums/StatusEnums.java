@@ -1,6 +1,5 @@
 package inid.dbfmp.oauth.api.enums;
 
-import inid.dbfmp.common.dto.IErrorCode;
 import lombok.AllArgsConstructor;
 
 /**

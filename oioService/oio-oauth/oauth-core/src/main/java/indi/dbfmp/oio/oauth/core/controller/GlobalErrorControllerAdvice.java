@@ -1,7 +1,7 @@
 package indi.dbfmp.oio.oauth.core.controller;
 
 import indi.dbfmp.oio.oauth.core.exception.CommonException;
-import inid.dbfmp.common.dto.CommonResult;
+import indi.dbfmp.web.common.dto.CommonResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

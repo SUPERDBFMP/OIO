@@ -29,8 +29,10 @@
         <redisson.version>3.11.4</redisson.version>
         <spring.boot.admin>2.1.0</spring.boot.admin>
         <dbfmpCommon.version>1.0.0-SNAPSHOT</dbfmpCommon.version>
+        <dbfmpCommon.web-version>1.0.0-SNAPSHOT</dbfmpCommon.web-version>
         <oauth-api-version>1.0.0-SNAPSHOT</oauth-api-version>
         <mysql-connector-version>8.0.18</mysql-connector-version>
+        <spring-boot-validator-starter>1.0.0-SNAPSHOT</spring-boot-validator-starter>
     </properties>
 
     <dependencyManagement>
@@ -107,6 +109,12 @@
                 <version>${mysql-connector-version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>indi.dbfmp</groupId>
+                <artifactId>spring-boot-validator-starter</artifactId>
+                <version>${spring-boot-validator-starter}</version>
+            </dependency>
+
         </dependencies>
 
     </dependencyManagement>
@@ -143,8 +151,8 @@
         </dependency>
         <dependency>
             <groupId>indi.dbfmp</groupId>
-            <artifactId>dbfmpCommon</artifactId>
-            <version>${dbfmpCommon.version}</version>
+            <artifactId>web-common</artifactId>
+            <version>${dbfmpCommon.web-version}</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>

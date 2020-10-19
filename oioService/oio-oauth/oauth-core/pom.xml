@@ -80,6 +80,10 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>indi.dbfmp</groupId>
+            <artifactId>spring-boot-validator-starter</artifactId>
+        </dependency>
     </dependencies>
 
     <profiles>

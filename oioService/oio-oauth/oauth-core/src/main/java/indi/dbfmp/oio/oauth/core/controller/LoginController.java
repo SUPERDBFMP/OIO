@@ -6,7 +6,7 @@ import indi.dbfmp.oio.oauth.core.dto.webDto.RefreshDto;
 import indi.dbfmp.oio.oauth.core.dto.webDto.TokenDto;
 import indi.dbfmp.oio.oauth.core.service.impl.TokenService;
 import indi.dbfmp.oio.oauth.core.dto.webDto.LoginDto;
-import inid.dbfmp.common.dto.CommonResult;
+import indi.dbfmp.web.common.dto.CommonResult;
 import inid.dbfmp.oauth.api.dto.VerifyTokenDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

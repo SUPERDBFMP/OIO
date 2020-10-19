@@ -9,6 +9,7 @@ import indi.dbfmp.oio.oauth.core.dto.PermissionCheckDto;
 import indi.dbfmp.oio.oauth.core.dto.RoleCheckDto;
 import indi.dbfmp.oio.oauth.core.entity.*;
 import indi.dbfmp.oio.oauth.core.innerService.*;
+import indi.dbfmp.validator.core.annotation.ValidateBefore;
 import inid.dbfmp.oauth.api.enums.StatusEnums;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,7 @@ public class AuthService {
      * @param roleCheckDto roleCheckDto
      * @return 是否拥有权限
      */
+    @ValidateBefore
     public boolean roleCheck(RoleCheckDto roleCheckDto) {
         //检查用户合法性
         if (usersInnerService.count(new LambdaQueryWrapper<Users>().eq(Users::getUserId, roleCheckDto.getUserId()).eq(Users::getLoginFlag, StatusEnums.VALID.getCode())) <= 0) {
