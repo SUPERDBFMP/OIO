@@ -28,5 +28,10 @@ public class Groups extends BaseEntity {
      */
     private String groupCode;
 
+    /**
+     * 组织机构ID
+     */
+    private String orgId;
+
 
 }

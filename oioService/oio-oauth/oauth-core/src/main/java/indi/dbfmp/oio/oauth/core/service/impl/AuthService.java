@@ -108,6 +108,7 @@ public class AuthService {
      * @param permissionCheckDto permissionCheckDto
      * @return 是否拥有权限
      */
+    @ValidateBefore
     public boolean permissionCheck(PermissionCheckDto permissionCheckDto) {
         //检查用户合法性
         if (usersInnerService.count(new LambdaQueryWrapper<Users>().eq(Users::getUserId, permissionCheckDto.getUserId()).eq(Users::getLoginFlag, StatusEnums.VALID.getCode())) <= 0) {

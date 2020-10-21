@@ -29,11 +29,6 @@ public class Roles extends BaseEntity {
     private String roleDesc;
 
     /**
-     * 分组id
-     */
-    private Integer groupId;
-
-    /**
      * 上级id
      */
     private Integer superiorId;

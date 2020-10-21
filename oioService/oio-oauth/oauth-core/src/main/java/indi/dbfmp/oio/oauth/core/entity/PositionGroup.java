@@ -6,27 +6,37 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 权限详情表
+ * 职位-分组表
  * </p>
  *
  * @author dbfmp
- * @since 2020-10-18
+ * @since 2020-10-20
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Permission extends BaseEntity {
+public class PositionGroup extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 授权名称
+     * 组织id
      */
-    private String permissionName;
+    private String positionId;
 
     /**
-     * 授权描述
+     * 分组id
      */
-    private String permissionDesc;
+    private String groupId;
+
+    /**
+     * 组织名
+     */
+    private String positionName;
+
+    /**
+     * 分组名
+     */
+    private String groupName;
 
 
 }
