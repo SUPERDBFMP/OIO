@@ -21,12 +21,12 @@ public class RolePermission extends BaseEntity {
     /**
      * 角色id
      */
-    private Integer roleId;
+    private String roleId;
 
     /**
      * 权限id
      */
-    private Integer permissionId;
+    private String permissionId;
 
     /**
      * 分组id

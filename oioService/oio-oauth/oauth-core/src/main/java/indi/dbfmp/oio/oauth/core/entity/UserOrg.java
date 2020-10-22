@@ -21,12 +21,12 @@ public class UserOrg extends BaseEntity {
     /**
      * 组织id
      */
-    private Integer orgId;
+    private String orgId;
 
     /**
      * 用户id
      */
-    private Integer userId;
+    private String userId;
 
     /**
      * 组织名称

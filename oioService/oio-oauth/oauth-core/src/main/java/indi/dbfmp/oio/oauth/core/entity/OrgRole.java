@@ -21,12 +21,12 @@ public class OrgRole extends BaseEntity {
     /**
      * 组织id
      */
-    private Integer orgId;
+    private String orgId;
 
     /**
      * 角色id
      */
-    private Integer roleId;
+    private String roleId;
 
     /**
      * 组织名

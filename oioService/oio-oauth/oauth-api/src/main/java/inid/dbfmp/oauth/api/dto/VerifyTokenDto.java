@@ -1,7 +1,8 @@
 package inid.dbfmp.oauth.api.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -12,9 +13,14 @@ import lombok.Data;
  * @name: VerifyTokenDto
  * @since 2020/10/14 10:00 下午
  */
-@Data
+@EqualsAndHashCode
 @Builder
-public class VerifyTokenDto {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class VerifyTokenDto implements Serializable {
+
+    private static final long serialVersionUID = 7143574577901010359L;
 
     private PayloadDto payloadDto;
 

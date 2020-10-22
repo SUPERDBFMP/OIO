@@ -24,9 +24,9 @@ public class Permission extends BaseEntity {
     private String permissionName;
 
     /**
-     * 授权描述
+     * 授权英文代码
      */
-    private String permissionDesc;
+    private String permissionCode;
 
 
 }

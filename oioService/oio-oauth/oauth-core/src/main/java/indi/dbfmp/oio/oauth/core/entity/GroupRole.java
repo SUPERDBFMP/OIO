@@ -21,12 +21,12 @@ public class GroupRole extends BaseEntity {
     /**
      * 分组id
      */
-    private Integer groupId;
+    private String groupId;
 
     /**
      * 角色id
      */
-    private Integer roleId;
+    private String roleId;
 
     /**
      * 角色名

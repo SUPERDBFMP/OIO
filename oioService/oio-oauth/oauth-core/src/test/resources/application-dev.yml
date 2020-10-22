@@ -16,7 +16,7 @@ spring:
 
 logging:
   level:
-    indi.dbfmp.oio.oauth.core.mapper: error
+    indi.dbfmp.oio.oauth.core.mapper: debug
 
 jwtRsaKeyPath: /Users/dbfmp/myWork/OIO/oioService/oio-oauth/oauth-core/src/main/resources/jwt.jks
 jwtRsaKey: 123456

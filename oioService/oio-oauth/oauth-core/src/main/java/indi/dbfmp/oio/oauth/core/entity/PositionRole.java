@@ -21,12 +21,12 @@ public class PositionRole extends BaseEntity {
     /**
      * 组织id
      */
-    private Integer positionId;
+    private String positionId;
 
     /**
      * 角色id
      */
-    private Integer roleId;
+    private String roleId;
 
     /**
      * 组织名

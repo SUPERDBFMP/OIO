@@ -19,15 +19,13 @@ public class Roles extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 角色英文代码
+     */
+    private String roleCode;
+    /**
      * 角色名
      */
     private String roleName;
-
-    /**
-     * 角色描述
-     */
-    private String roleDesc;
-
     /**
      * 上级id
      */

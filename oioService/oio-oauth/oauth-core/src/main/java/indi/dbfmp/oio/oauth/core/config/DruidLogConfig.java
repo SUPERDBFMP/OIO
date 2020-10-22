@@ -23,7 +23,6 @@ public class DruidLogConfig {
     public Slf4jLogFilter loggerInit() {
         Slf4jLogFilter filter = new Slf4jLogFilter();
         filter.setStatementExecutableSqlLogEnable(true);
-        filter.setStatementExecutableSqlLogEnable(true);
         filter.setResultSetLogEnabled(false);
         filter.setConnectionLogEnabled(false);
         filter.setDataSourceLogEnabled(false);
@@ -34,11 +33,11 @@ public class DruidLogConfig {
         filter.setStatementExecuteAfterLogEnabled(false);
         filter.setStatementExecuteQueryAfterLogEnabled(false);
         filter.setStatementExecuteUpdateAfterLogEnabled(false);
-        filter.setStatementExecuteBatchAfterLogEnabled(false);
+        filter.setStatementExecuteBatchAfterLogEnabled(true);
         filter.setStatementCloseAfterLogEnabled(false);
         filter.setStatementParameterSetLogEnabled(false);
         filter.setStatementParameterClearLogEnable(false);
-        filter.setStatementLogErrorEnabled(false);
+        filter.setStatementLogErrorEnabled(true);
         filter.setStatementSqlFormatOption(new SQLUtils.FormatOption(true,false));
         return filter;
     }

@@ -1,6 +1,9 @@
 package inid.dbfmp.oauth.api.service;
 
 import inid.dbfmp.oauth.api.dto.PayloadDto;
+import inid.dbfmp.oauth.api.dto.RefreshToken;
+import inid.dbfmp.oauth.api.dto.Token;
+import inid.dbfmp.oauth.api.dto.VerifyTokenDto;
 
 /**
  * <p>
@@ -13,6 +16,7 @@ import inid.dbfmp.oauth.api.dto.PayloadDto;
  */
 public interface JwtTokenService {
 
-    PayloadDto verifyAndGetPayloadDto(String token) throws Exception;
+    VerifyTokenDto verifyToken(String token);
 
+    Token refreshToken(RefreshToken refreshToken);
 }
