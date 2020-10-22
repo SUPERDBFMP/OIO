@@ -2,8 +2,11 @@ package indi.dbfmp.oio.oauth.core.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import indi.dbfmp.validator.core.group.UpdateGroup;
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -18,6 +21,7 @@ public class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 855245085046801803L;
 
+    @NotBlank(message = "主键不能为空",groups = UpdateGroup.class)
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
 

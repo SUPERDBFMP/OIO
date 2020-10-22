@@ -1,8 +1,9 @@
 package indi.dbfmp.oio.oauth.core.entity;
 
-import indi.dbfmp.oio.oauth.core.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * <p>
@@ -21,11 +22,13 @@ public class Org extends BaseEntity {
     /**
      * 组织名称
      */
+    @NotBlank(message = "组织名称不能为空")
     private String orgName;
 
     /**
      * 组织编码
      */
+    @NotBlank(message = "组织编码不能为空")
     private String orgCode;
 
     /**
@@ -36,6 +39,7 @@ public class Org extends BaseEntity {
     /**
      * 组织机构类型
      */
+    @NotBlank(message = "组织机构类型不能为空")
     private String orgType;
 
 
