@@ -161,12 +161,13 @@ public class CodeGenerator {
         strategy.setEntityColumnConstant(true);
         strategy.setEntityLombokModel(true);
         strategy.setRestControllerStyle(true);
+        strategy.setChainModel(true);
         // 公共父类
         //strategy.setSuperControllerClass("com.baomidou.ant.common.BaseController");
         // 写于父类中的公共字段
         strategy.setSuperEntityColumns("id","create_by","create_date","update_by","update_date","remarks","deleted","version");
         //strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
-        strategy.setInclude("org");
+        strategy.setInclude("role_permission");
         strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix(pc.getModuleName() + "_");
         mpg.setStrategy(strategy);

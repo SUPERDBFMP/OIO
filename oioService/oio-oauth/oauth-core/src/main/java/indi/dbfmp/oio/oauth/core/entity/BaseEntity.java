@@ -3,8 +3,11 @@ package indi.dbfmp.oio.oauth.core.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import indi.dbfmp.validator.core.group.UpdateGroup;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -16,8 +19,11 @@ import java.util.Date;
  * @AUTHOR huangtai
  * @DATE: 2020/6/14 8:43 下午
  **/
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Accessors(chain = true)
+@SuperBuilder
 public class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 855245085046801803L;

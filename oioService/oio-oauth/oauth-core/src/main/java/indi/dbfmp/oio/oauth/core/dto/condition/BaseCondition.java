@@ -28,6 +28,7 @@ public class BaseCondition implements Serializable {
 
     private static final long serialVersionUID = -5919830914471574968L;
 
+    @WrapperCondition(columnName = BaseEntity.ID)
     private String id;
 
     @WrapperCondition(columnName = BaseEntity.CREATE_DATE,wrapperType = WrapperTypes.GE)

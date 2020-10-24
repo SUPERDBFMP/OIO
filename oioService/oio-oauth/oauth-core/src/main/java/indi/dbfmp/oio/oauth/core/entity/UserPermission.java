@@ -2,6 +2,7 @@ package indi.dbfmp.oio.oauth.core.entity;
 
 import indi.dbfmp.oio.oauth.core.entity.BaseEntity;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 /**
  * <p>
@@ -11,7 +12,7 @@ import lombok.*;
  * @author dbfmp
  * @since 2020-10-18
  */
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

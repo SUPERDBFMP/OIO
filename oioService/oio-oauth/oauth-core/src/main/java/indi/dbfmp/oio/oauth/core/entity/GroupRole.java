@@ -1,8 +1,8 @@
 package indi.dbfmp.oio.oauth.core.entity;
 
 import indi.dbfmp.oio.oauth.core.entity.BaseEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 /**
  * <p>
@@ -12,6 +12,9 @@ import lombok.EqualsAndHashCode;
  * @author dbfmp
  * @since 2020-10-18
  */
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class GroupRole extends BaseEntity {
