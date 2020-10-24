@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import indi.dbfmp.oio.oauth.core.dto.condition.OrgCondition;
 import indi.dbfmp.oio.oauth.core.dto.webDto.BatchDelDto;
 import indi.dbfmp.oio.oauth.core.entity.Org;
+import indi.dbfmp.oio.oauth.core.event.update.OrgUpdateEvent;
 import indi.dbfmp.oio.oauth.core.innerService.IOrgInnerService;
 import indi.dbfmp.oio.oauth.core.uitls.QueryWrapperUtil;
 import indi.dbfmp.validator.core.annotation.ValidateBefore;
@@ -16,6 +17,7 @@ import indi.dbfmp.validator.core.group.UpdateGroup;
 import indi.dbfmp.web.common.dto.CommonResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +39,8 @@ public class OrgController {
 
     @Autowired
     private IOrgInnerService orgInnerService;
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     //增
     @RequestMapping("/add")
@@ -63,16 +67,23 @@ public class OrgController {
     @RequestMapping("/update")
     @ValidateBefore(groups = UpdateGroup.class)
     public CommonResult<?> update(@RequestBody Org saveOrg) {
-        return CommonResult.success(orgInnerService.updateById(saveOrg));
+        boolean updateResult = orgInnerService.updateById(saveOrg);
+        eventPublisher.publishEvent(OrgUpdateEvent.builder()
+                .id(saveOrg.getId())
+                .orgCode(saveOrg.getOrgCode())
+                .orgName(saveOrg.getOrgName())
+                .orgType(saveOrg.getOrgType())
+                .build());
+        return CommonResult.success(updateResult);
     }
 
     //查
     @RequestMapping("/get")
     public CommonResult<?> get(@RequestBody OrgCondition orgCondition) {
-        IPage<Org> page = new Page<>(orgCondition.getPageNum(),orgCondition.getPageSize());
+        IPage<Org> page = new Page<>(orgCondition.getPageNum(), orgCondition.getPageSize());
         QueryWrapper<Org> queryWrapper = new QueryWrapper<>();
-        QueryWrapperUtil.buildQueryWrapper(orgCondition,queryWrapper);
-        return CommonResult.success(orgInnerService.page(page,queryWrapper));
+        QueryWrapperUtil.buildQueryWrapper(orgCondition, queryWrapper);
+        return CommonResult.success(orgInnerService.page(page, queryWrapper));
     }
 
     //查

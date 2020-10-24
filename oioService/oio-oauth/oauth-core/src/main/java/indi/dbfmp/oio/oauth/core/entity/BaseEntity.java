@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -57,6 +58,7 @@ public class BaseEntity implements Serializable {
     /**
      * 版本号
      */
+    @NotNull(message = "version不能为空",groups = UpdateGroup.class)
     @Version
     private Integer version;
 
