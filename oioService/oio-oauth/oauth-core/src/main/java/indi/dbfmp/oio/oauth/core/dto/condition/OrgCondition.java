@@ -1,10 +1,13 @@
 package indi.dbfmp.oio.oauth.core.dto.condition;
 
+import indi.dbfmp.oio.oauth.core.annotaion.WrapperCondition;
+import indi.dbfmp.oio.oauth.core.enums.WrapperTypes;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import indi.dbfmp.oio.oauth.core.entity.Org;
 
 /**
  * <p>
@@ -22,10 +25,13 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class OrgCondition extends BaseCondition{
 
+    @WrapperCondition(columnName = Org.ORG_NAME,wrapperType = WrapperTypes.EQ)
     String orgName;
 
+    @WrapperCondition(columnName = Org.ORG_CODE,wrapperType = WrapperTypes.EQ)
     String orgCode;
 
+    @WrapperCondition(columnName = Org.ORG_TYPE,wrapperType = WrapperTypes.EQ)
     String orgType;
 
 }

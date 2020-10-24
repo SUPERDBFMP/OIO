@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
  * </p>
  *
  * @author dbfmp
- * @since 2020-10-18
+ * @since 2020-10-23
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -42,5 +42,13 @@ public class Org extends BaseEntity {
     @NotBlank(message = "组织机构类型不能为空")
     private String orgType;
 
+
+    public static final String ORG_NAME = "org_name";
+
+    public static final String ORG_CODE = "org_code";
+
+    public static final String SUPERIOR_ID = "superior_id";
+
+    public static final String ORG_TYPE = "org_type";
 
 }

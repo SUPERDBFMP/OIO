@@ -63,4 +63,20 @@ public class BaseEntity implements Serializable {
     @TableLogic
     private Integer deleted;
 
+    public static final String ID = "id";
+
+    public static final String CREATE_BY = "create_by";
+
+    public static final String CREATE_DATE = "create_date";
+
+    public static final String UPDATE_BY = "update_by";
+
+    public static final String UPDATE_DATE = "update_date";
+
+    public static final String REMARKS = "remarks";
+
+    public static final String VERSION = "version";
+
+    public static final String DELETED = "deleted";
+
 }

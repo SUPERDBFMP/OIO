@@ -8,9 +8,11 @@ import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.rules.FileType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -122,6 +124,20 @@ public class CodeGenerator {
             }
         });
         */
+        cfg.setFileCreate((configBuilder, fileType, filePath) -> {
+            //如果是Entity则直接返回true表示写文件
+            if (fileType == FileType.ENTITY) {
+                return true;
+            }
+            //否则先判断文件是否存在
+            File file = new File(filePath);
+            boolean exist = file.exists();
+            if (!exist) {
+                file.getParentFile().mkdirs();
+            }
+            //文件不存在或者全局配置的fileOverride为true才写文件
+            return !exist || configBuilder.getGlobalConfig().isFileOverride();
+        });
         cfg.setFileOutConfigList(focList);
         mpg.setCfg(cfg);
 
@@ -142,6 +158,7 @@ public class CodeGenerator {
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         strategy.setSuperEntityClass("indi.dbfmp.oio.oauth.core.entity.BaseEntity");
+        strategy.setEntityColumnConstant(true);
         strategy.setEntityLombokModel(true);
         strategy.setRestControllerStyle(true);
         // 公共父类
@@ -149,7 +166,7 @@ public class CodeGenerator {
         // 写于父类中的公共字段
         strategy.setSuperEntityColumns("id","create_by","create_date","update_by","update_date","remarks","deleted","version");
         //strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
-        strategy.setInclude("position_group");
+        strategy.setInclude("org");
         strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix(pc.getModuleName() + "_");
         mpg.setStrategy(strategy);

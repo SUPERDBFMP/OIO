@@ -10,6 +10,7 @@ import indi.dbfmp.oio.oauth.core.dto.condition.OrgCondition;
 import indi.dbfmp.oio.oauth.core.dto.webDto.BatchDelDto;
 import indi.dbfmp.oio.oauth.core.entity.Org;
 import indi.dbfmp.oio.oauth.core.innerService.IOrgInnerService;
+import indi.dbfmp.oio.oauth.core.uitls.QueryWrapperUtil;
 import indi.dbfmp.validator.core.annotation.ValidateBefore;
 import indi.dbfmp.validator.core.group.UpdateGroup;
 import indi.dbfmp.web.common.dto.CommonResult;
@@ -70,16 +71,17 @@ public class OrgController {
     public CommonResult<?> get(@RequestBody OrgCondition orgCondition) {
         IPage<Org> page = new Page<>(orgCondition.getPageNum(),orgCondition.getPageSize());
         QueryWrapper<Org> queryWrapper = new QueryWrapper<>();
-        return CommonResult.success(orgInnerService.page(page,new LambdaQueryWrapper<Org>()
-                .eq(StrUtil.isNotBlank(orgCondition.getId()),Org::getId,orgCondition.getId())
-                .eq(StrUtil.isNotBlank(orgCondition.getOrgCode()),Org::getOrgCode,orgCondition.getOrgCode())
-                .eq(StrUtil.isNotBlank(orgCondition.getOrgName()),Org::getOrgName,orgCondition.getOrgName())
-                .eq(StrUtil.isNotBlank(orgCondition.getOrgType()),Org::getOrgType,orgCondition.getOrgType())
-                .ge(null != orgCondition.getCreateDateTimeStart(),Org::getCreateDate,orgCondition.getCreateDateTimeStart())
-                .le(null != orgCondition.getCreateDateTimeEnd(),Org::getCreateDate,orgCondition.getCreateDateTimeEnd())
-                .ge(null != orgCondition.getUpdateDateTimeStart(),Org::getCreateDate,orgCondition.getUpdateDateTimeStart())
-                .le(null != orgCondition.getUpdateDateTimeEnd(),Org::getCreateDate,orgCondition.getUpdateDateTimeEnd())
-        ));
+        QueryWrapperUtil.buildQueryWrapper(orgCondition,queryWrapper);
+        return CommonResult.success(orgInnerService.page(page,queryWrapper));
+    }
+
+    //查
+    @RequestMapping("/get/{id}")
+    public CommonResult<?> getById(@PathVariable("id") String id) {
+        if (StrUtil.isBlank(id)) {
+            return CommonResult.success(null);
+        }
+        return CommonResult.success(orgInnerService.getById(id));
     }
 
 
