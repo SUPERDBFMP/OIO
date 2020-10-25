@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import indi.dbfmp.oio.oauth.core.entity.GroupRole;
 import indi.dbfmp.oio.oauth.core.entity.PositionGroup;
 import indi.dbfmp.oio.oauth.core.entity.RolePermission;
+import indi.dbfmp.oio.oauth.core.entity.UrlPermission;
 import indi.dbfmp.oio.oauth.core.innerService.IGroupRoleInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IPositionGroupInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IRolePermissionInnerService;
+import indi.dbfmp.oio.oauth.core.innerService.IUrlPermissionInnerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -33,6 +35,8 @@ public class GroupsUpdateEventListener {
     private IPositionGroupInnerService positionGroupInnerService;
     @Autowired
     private IRolePermissionInnerService rolePermissionInnerService;
+    @Autowired
+    private IUrlPermissionInnerService urlPermissionInnerService;
 
     @Async("updateMiddleTablePool")
     @EventListener
@@ -54,6 +58,8 @@ public class GroupsUpdateEventListener {
         positionGroupInnerService.update(positionGroup,new LambdaQueryWrapper<PositionGroup>().eq(PositionGroup::getGroupId,groupsUpdateEvent.getId()));
         RolePermission rolePermission = RolePermission.builder().groupId(groupsUpdateEvent.getId()).groupName(groupsUpdateEvent.getGroupName()).build();
         rolePermissionInnerService.update(rolePermission,new LambdaQueryWrapper<RolePermission>().eq(RolePermission::getGroupId,groupsUpdateEvent.getId()));
+        UrlPermission urlPermission = UrlPermission.builder().groupId(groupsUpdateEvent.getId()).groupName(groupsUpdateEvent.getGroupName()).build();
+        urlPermissionInnerService.update(urlPermission,new LambdaQueryWrapper<UrlPermission>().eq(UrlPermission::getGroupId,groupsUpdateEvent.getId()));
         log.info("groupsUpdateEvent,更新结束");
     }
 

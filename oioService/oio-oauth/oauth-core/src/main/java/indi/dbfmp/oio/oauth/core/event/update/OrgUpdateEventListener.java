@@ -4,10 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import indi.dbfmp.oio.oauth.core.entity.Permission;
 import indi.dbfmp.oio.oauth.core.entity.Position;
-import indi.dbfmp.oio.oauth.core.entity.UserOrg;
 import indi.dbfmp.oio.oauth.core.innerService.IPermissionInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IPositionInnerService;
-import indi.dbfmp.oio.oauth.core.innerService.IUserOrgInnerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -28,8 +26,6 @@ import org.springframework.stereotype.Component;
 public class OrgUpdateEventListener {
 
     @Autowired
-    private IUserOrgInnerService userOrgInnerService;
-    @Autowired
     private IPositionInnerService positionInnerService;
     @Autowired
     private IPermissionInnerService permissionInnerService;
@@ -43,8 +39,6 @@ public class OrgUpdateEventListener {
             log.warn("orgUpdateEvent,警告！更新事件主键id为空！");
             return;
         }
-        UserOrg userOrg = UserOrg.builder().orgId(orgUpdateEvent.getId()).orgName(orgUpdateEvent.getOrgName()).build();
-        userOrgInnerService.update(userOrg,new LambdaQueryWrapper<UserOrg>().eq(UserOrg::getOrgId,orgUpdateEvent.getId()));
         Position position = Position.builder().orgId(orgUpdateEvent.getId()).orgName(orgUpdateEvent.getOrgName()).build();
         positionInnerService.update(position,new LambdaQueryWrapper<Position>().eq(Position::getOrgId,orgUpdateEvent.getOrgName()));
         Permission permission = Permission.builder().orgId(orgUpdateEvent.getId()).orgName(orgUpdateEvent.getOrgName()).build();
