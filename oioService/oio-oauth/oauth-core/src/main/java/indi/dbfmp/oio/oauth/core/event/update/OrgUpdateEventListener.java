@@ -2,8 +2,10 @@ package indi.dbfmp.oio.oauth.core.event.update;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import indi.dbfmp.oio.oauth.core.entity.Groups;
 import indi.dbfmp.oio.oauth.core.entity.Permission;
 import indi.dbfmp.oio.oauth.core.entity.Position;
+import indi.dbfmp.oio.oauth.core.innerService.IGroupsInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IPermissionInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IPositionInnerService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,8 @@ public class OrgUpdateEventListener {
     private IPositionInnerService positionInnerService;
     @Autowired
     private IPermissionInnerService permissionInnerService;
+    @Autowired
+    private IGroupsInnerService groupsInnerService;
     //todo 更多表更新
 
     @Async("updateMiddleTablePool")
@@ -43,6 +47,8 @@ public class OrgUpdateEventListener {
         positionInnerService.update(position,new LambdaQueryWrapper<Position>().eq(Position::getOrgId,orgUpdateEvent.getOrgName()));
         Permission permission = Permission.builder().orgId(orgUpdateEvent.getId()).orgName(orgUpdateEvent.getOrgName()).build();
         permissionInnerService.update(permission,new LambdaQueryWrapper<Permission>().eq(Permission::getOrgId,orgUpdateEvent.getId()));
+        Groups groups = Groups.builder().orgId(orgUpdateEvent.getId()).orgName(orgUpdateEvent.getOrgName()).build();
+        groupsInnerService.update(groups,new LambdaQueryWrapper<Groups>().eq(Groups::getOrgId,orgUpdateEvent.getId()));
         log.info("orgUpdateEvent,更新结束");
     }
 

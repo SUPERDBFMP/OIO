@@ -65,6 +65,7 @@ public class GrantAuthService {
             log.error("grantAuthToUser,分组无效->GroupId:{},OrgId:{}",authDto.getGroupId(),authDto.getOrgId());
             throw new CommonException("分组无效！");
         }
+        //todo 按group-role授权
         for (String positionId : authDto.getPositionIdList()) {
             if (positionGroupInnerService.count(new LambdaQueryWrapper<PositionGroup>().eq(PositionGroup::getGroupId, authDto.getGroupId()).eq(PositionGroup::getPositionId, positionId)) <= 0) {
                 log.error("grantAuthToUser,职位无效->GroupId:{},PositionId:{}",authDto.getGroupId(),positionId);

@@ -47,11 +47,19 @@ public class Groups extends BaseEntity {
     @NotBlank(message = "组织机构id不能为空",groups = AddGroup.class)
     private String orgId;
 
+    /**
+     * 组织名称
+     */
+    @NotBlank(message = "组织名称不能为空",groups = AddGroup.class)
+    private String orgName;
+
 
     public static final String GROUP_NAME = "group_name";
 
     public static final String GROUP_CODE = "group_code";
 
     public static final String ORG_ID = "org_id";
+
+    public static final String ORG_NAME = "org_name";
 
 }

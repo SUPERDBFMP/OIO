@@ -2,14 +2,8 @@ package indi.dbfmp.oio.oauth.core.event.update;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import indi.dbfmp.oio.oauth.core.entity.GroupRole;
-import indi.dbfmp.oio.oauth.core.entity.PositionGroup;
-import indi.dbfmp.oio.oauth.core.entity.RolePermission;
-import indi.dbfmp.oio.oauth.core.entity.UrlPermission;
-import indi.dbfmp.oio.oauth.core.innerService.IGroupRoleInnerService;
-import indi.dbfmp.oio.oauth.core.innerService.IPositionGroupInnerService;
-import indi.dbfmp.oio.oauth.core.innerService.IRolePermissionInnerService;
-import indi.dbfmp.oio.oauth.core.innerService.IUrlPermissionInnerService;
+import indi.dbfmp.oio.oauth.core.entity.*;
+import indi.dbfmp.oio.oauth.core.innerService.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -37,6 +31,8 @@ public class GroupsUpdateEventListener {
     private IRolePermissionInnerService rolePermissionInnerService;
     @Autowired
     private IUrlPermissionInnerService urlPermissionInnerService;
+    @Autowired
+    private IPositionRoleInnerService positionRoleInnerService;
 
     @Async("updateMiddleTablePool")
     @EventListener
@@ -60,6 +56,8 @@ public class GroupsUpdateEventListener {
         rolePermissionInnerService.update(rolePermission,new LambdaQueryWrapper<RolePermission>().eq(RolePermission::getGroupId,groupsUpdateEvent.getId()));
         UrlPermission urlPermission = UrlPermission.builder().groupId(groupsUpdateEvent.getId()).groupName(groupsUpdateEvent.getGroupName()).build();
         urlPermissionInnerService.update(urlPermission,new LambdaQueryWrapper<UrlPermission>().eq(UrlPermission::getGroupId,groupsUpdateEvent.getId()));
+        PositionRole positionRole = PositionRole.builder().groupId(groupsUpdateEvent.getId()).groupName(groupsUpdateEvent.getGroupName()).build();
+        positionRoleInnerService.update(positionRole,new LambdaQueryWrapper<PositionRole>().eq(PositionRole::getGroupId,groupsUpdateEvent.getId()));
         log.info("groupsUpdateEvent,更新结束");
     }
 

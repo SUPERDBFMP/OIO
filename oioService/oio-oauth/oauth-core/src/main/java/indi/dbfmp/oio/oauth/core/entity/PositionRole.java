@@ -50,6 +50,11 @@ public class PositionRole extends BaseEntity {
      */
     private String groupId;
 
+    /**
+     * 分组名
+     */
+    private String groupName;
+
 
     public static final String POSITION_ID = "position_id";
 
@@ -60,5 +65,7 @@ public class PositionRole extends BaseEntity {
     public static final String POSITION_NAME = "position_name";
 
     public static final String GROUP_ID = "group_id";
+
+    public static final String GROUP_NAME = "group_name";
 
 }
