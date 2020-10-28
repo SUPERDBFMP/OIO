@@ -50,7 +50,7 @@ public class GroupsController {
         return CommonResult.success(saveResult);
     }
 
-    //删
+    /*//删
     @RequestMapping("/del/{id}")
     public CommonResult<?> del(@PathVariable("id") String id) {
         return CommonResult.success(groupsInnerService.removeById(id));
@@ -61,7 +61,7 @@ public class GroupsController {
     @ValidateBefore
     public CommonResult<?> batchDel(@RequestBody BatchDelDto batchDelDto) {
         return CommonResult.success(groupsInnerService.removeByIds(batchDelDto.getDelIds()));
-    }
+    }*/
 
     //改
     @RequestMapping("/update")

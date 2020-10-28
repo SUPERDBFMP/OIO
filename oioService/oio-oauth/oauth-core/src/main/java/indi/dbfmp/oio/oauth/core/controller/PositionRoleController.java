@@ -7,17 +7,17 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import indi.dbfmp.oio.oauth.core.dto.condition.PositionGroupCondition;
 import indi.dbfmp.oio.oauth.core.dto.condition.PositionRoleCondition;
+import indi.dbfmp.oio.oauth.core.dto.webDto.GroupRoleDto;
+import indi.dbfmp.oio.oauth.core.dto.webDto.PositionRoleDto;
 import indi.dbfmp.oio.oauth.core.entity.PositionGroup;
 import indi.dbfmp.oio.oauth.core.entity.PositionRole;
 import indi.dbfmp.oio.oauth.core.innerService.IPositionRoleInnerService;
+import indi.dbfmp.oio.oauth.core.service.impl.PositionRoleService;
 import indi.dbfmp.oio.oauth.core.uitls.QueryWrapperUtil;
+import indi.dbfmp.validator.core.annotation.ValidateBefore;
 import indi.dbfmp.web.common.dto.CommonResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -33,6 +33,8 @@ public class PositionRoleController {
 
     @Autowired
     private IPositionRoleInnerService positionRoleInnerService;
+    @Autowired
+    private PositionRoleService positionRoleService;
 
     //查
     @RequestMapping("/get")
@@ -52,5 +54,16 @@ public class PositionRoleController {
         return CommonResult.success(positionRoleInnerService.getById(id));
     }
 
+    @PostMapping("/addNewRoleToPosition")
+    @ValidateBefore
+    public CommonResult<?> addNewRoleToGroup(PositionRoleDto positionRoleDto) {
+        return CommonResult.success(positionRoleService.addNewRoleToPosition(positionRoleDto.getGroupId(),positionRoleDto.getPositionId(),positionRoleDto.getRoleIdList()));
+    }
+
+    @PostMapping("/removePositionFromGroup")
+    @ValidateBefore
+    public CommonResult<?> removePositionFromGroup(PositionRoleDto positionRoleDto) {
+        return CommonResult.success(positionRoleService.removeRolesFromPosition(positionRoleDto.getGroupId(),positionRoleDto.getPositionId(),positionRoleDto.getRoleIdList()));
+    }
 
 }

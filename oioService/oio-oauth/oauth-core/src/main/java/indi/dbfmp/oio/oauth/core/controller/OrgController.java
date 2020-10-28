@@ -50,7 +50,7 @@ public class OrgController {
         return CommonResult.success(saveResult);
     }
 
-    //删
+    /*//删
     @RequestMapping("/del/{id}")
     public CommonResult<?> del(@PathVariable("id") String id) {
         return CommonResult.success(orgInnerService.removeById(id));
@@ -61,7 +61,7 @@ public class OrgController {
     @ValidateBefore
     public CommonResult<?> batchDel(@RequestBody BatchDelDto batchDelDto) {
         return CommonResult.success(orgInnerService.removeByIds(batchDelDto.getDelIds()));
-    }
+    }*/
 
     //改
     @RequestMapping("/update")

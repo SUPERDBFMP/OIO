@@ -8,20 +8,18 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import indi.dbfmp.oio.oauth.core.dto.condition.GroupCondition;
 import indi.dbfmp.oio.oauth.core.dto.condition.GroupRoleCondition;
 import indi.dbfmp.oio.oauth.core.dto.webDto.BatchDelDto;
+import indi.dbfmp.oio.oauth.core.dto.webDto.GroupRoleDto;
 import indi.dbfmp.oio.oauth.core.entity.GroupRole;
 import indi.dbfmp.oio.oauth.core.entity.Groups;
 import indi.dbfmp.oio.oauth.core.event.update.GroupsUpdateEvent;
 import indi.dbfmp.oio.oauth.core.innerService.IGroupRoleInnerService;
+import indi.dbfmp.oio.oauth.core.service.impl.GroupRoleService;
 import indi.dbfmp.oio.oauth.core.uitls.QueryWrapperUtil;
 import indi.dbfmp.validator.core.annotation.ValidateBefore;
 import indi.dbfmp.validator.core.group.UpdateGroup;
 import indi.dbfmp.web.common.dto.CommonResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -37,6 +35,8 @@ public class GroupRoleController {
 
     @Autowired
     private IGroupRoleInnerService groupRoleInnerService;
+    @Autowired
+    private GroupRoleService groupRoleService;
 
     //查
     @RequestMapping("/get")
@@ -56,5 +56,16 @@ public class GroupRoleController {
         return CommonResult.success(groupRoleInnerService.getById(id));
     }
 
+    @PostMapping("/addNewRoleToGroup")
+    @ValidateBefore
+    public CommonResult<?> addNewRoleToGroup(GroupRoleDto groupRoleDto) {
+        return CommonResult.success(groupRoleService.addNewRoleToGroup(groupRoleDto.getGroupId(),groupRoleDto.getRoleIdList()));
+    }
+
+    @PostMapping("/removePositionFromGroup")
+    @ValidateBefore
+    public CommonResult<?> removePositionFromGroup(GroupRoleDto groupRoleDto) {
+        return CommonResult.success(groupRoleService.removePositionFromGroup(groupRoleDto.getGroupId(),groupRoleDto.getRoleIdList()));
+    }
 
 }

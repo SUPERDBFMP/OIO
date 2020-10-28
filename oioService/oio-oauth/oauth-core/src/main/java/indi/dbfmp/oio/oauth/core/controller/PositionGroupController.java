@@ -7,18 +7,18 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import indi.dbfmp.oio.oauth.core.dto.condition.GroupRoleCondition;
 import indi.dbfmp.oio.oauth.core.dto.condition.PositionGroupCondition;
+import indi.dbfmp.oio.oauth.core.dto.webDto.GroupPositionDto;
+import indi.dbfmp.oio.oauth.core.dto.webDto.GroupRoleDto;
 import indi.dbfmp.oio.oauth.core.entity.GroupRole;
 import indi.dbfmp.oio.oauth.core.entity.PositionGroup;
 import indi.dbfmp.oio.oauth.core.innerService.IGroupRoleInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IPositionGroupInnerService;
+import indi.dbfmp.oio.oauth.core.service.impl.GroupPositionService;
 import indi.dbfmp.oio.oauth.core.uitls.QueryWrapperUtil;
+import indi.dbfmp.validator.core.annotation.ValidateBefore;
 import indi.dbfmp.web.common.dto.CommonResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -34,6 +34,8 @@ public class PositionGroupController {
 
     @Autowired
     private IPositionGroupInnerService positionGroupInnerService;
+    @Autowired
+    private GroupPositionService groupPositionService;
 
     //查
     @RequestMapping("/get")
@@ -51,6 +53,18 @@ public class PositionGroupController {
             return CommonResult.success(null);
         }
         return CommonResult.success(positionGroupInnerService.getById(id));
+    }
+
+    @PostMapping("/addNewPositionToGroup")
+    @ValidateBefore
+    public CommonResult<?> addNewRoleToGroup(GroupPositionDto groupPositionDto) {
+        return CommonResult.success(groupPositionService.addNewPositionToGroup(groupPositionDto.getGroupId(),groupPositionDto.getPositionIdList()));
+    }
+
+    @PostMapping("/removePositionsFromGroup")
+    @ValidateBefore
+    public CommonResult<?> removePositionsFromGroup(GroupPositionDto groupPositionDto) {
+        return CommonResult.success(groupPositionService.removePositionsFromGroup(groupPositionDto.getGroupId(),groupPositionDto.getPositionIdList()));
     }
 
 }

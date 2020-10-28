@@ -7,17 +7,17 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import indi.dbfmp.oio.oauth.core.dto.condition.PositionRoleCondition;
 import indi.dbfmp.oio.oauth.core.dto.condition.RolePermissionCondition;
+import indi.dbfmp.oio.oauth.core.dto.webDto.PositionRoleDto;
+import indi.dbfmp.oio.oauth.core.dto.webDto.RolePermissionDto;
 import indi.dbfmp.oio.oauth.core.entity.PositionRole;
 import indi.dbfmp.oio.oauth.core.entity.RolePermission;
 import indi.dbfmp.oio.oauth.core.innerService.IRolePermissionInnerService;
+import indi.dbfmp.oio.oauth.core.service.impl.RolePermissionService;
 import indi.dbfmp.oio.oauth.core.uitls.QueryWrapperUtil;
+import indi.dbfmp.validator.core.annotation.ValidateBefore;
 import indi.dbfmp.web.common.dto.CommonResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -33,6 +33,8 @@ public class RolePermissionController {
 
     @Autowired
     private IRolePermissionInnerService rolePermissionInnerService;
+    @Autowired
+    private RolePermissionService rolePermissionService;
 
     //查
     @RequestMapping("/get")
@@ -52,5 +54,16 @@ public class RolePermissionController {
         return CommonResult.success(rolePermissionInnerService.getById(id));
     }
 
+    @PostMapping("/addNewPermissionToRole")
+    @ValidateBefore
+    public CommonResult<?> addNewPermissionToRole(RolePermissionDto rolePermissionDto) {
+        return CommonResult.success(rolePermissionService.addNewPermissionToRole(rolePermissionDto.getGroupId(),rolePermissionDto.getRoleId(),rolePermissionDto.getPermissionIdList()));
+    }
+
+    @PostMapping("/removePermissionFromRole")
+    @ValidateBefore
+    public CommonResult<?> removePermissionFromRole(RolePermissionDto rolePermissionDto) {
+        return CommonResult.success(rolePermissionService.removePermissionFromRole(rolePermissionDto.getGroupId(),rolePermissionDto.getRoleId(),rolePermissionDto.getPermissionIdList()));
+    }
 
 }
