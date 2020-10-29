@@ -4,6 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * <p>
@@ -14,6 +15,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @name: OioOauthCoreApplication
  * @since 2020/10/11 4:48 下午
  */
+@EnableScheduling
 @EnableDiscoveryClient
 @SpringBootApplication
 @MapperScan("indi.dbfmp.oio.oauth.core.mapper")

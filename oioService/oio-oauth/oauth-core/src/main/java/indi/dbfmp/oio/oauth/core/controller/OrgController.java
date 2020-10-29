@@ -2,14 +2,18 @@ package indi.dbfmp.oio.oauth.core.controller;
 
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import indi.dbfmp.oio.oauth.core.dto.condition.OrgCondition;
-import indi.dbfmp.oio.oauth.core.dto.webDto.BatchDelDto;
+import indi.dbfmp.oio.oauth.core.entity.Event;
 import indi.dbfmp.oio.oauth.core.entity.Org;
+import indi.dbfmp.oio.oauth.core.enums.EventStatus;
+import indi.dbfmp.oio.oauth.core.enums.EventTypes;
 import indi.dbfmp.oio.oauth.core.event.update.OrgUpdateEvent;
+import indi.dbfmp.oio.oauth.core.event.update.OrgUpdateEventListener;
+import indi.dbfmp.oio.oauth.core.innerService.IEventInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IOrgInnerService;
 import indi.dbfmp.oio.oauth.core.uitls.QueryWrapperUtil;
 import indi.dbfmp.validator.core.annotation.ValidateBefore;
@@ -21,7 +25,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -41,6 +44,8 @@ public class OrgController {
     private IOrgInnerService orgInnerService;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+    @Autowired
+    private IEventInnerService eventInnerService;
 
     //增
     @RequestMapping("/add")
@@ -68,12 +73,21 @@ public class OrgController {
     @ValidateBefore(groups = UpdateGroup.class)
     public CommonResult<?> update(@RequestBody Org saveOrg) {
         boolean updateResult = orgInnerService.updateById(saveOrg);
-        eventPublisher.publishEvent(OrgUpdateEvent.builder()
+        OrgUpdateEvent orgUpdateEvent = OrgUpdateEvent.builder()
                 .id(saveOrg.getId())
                 .orgCode(saveOrg.getOrgCode())
                 .orgName(saveOrg.getOrgName())
                 .orgType(saveOrg.getOrgType())
-                .build());
+                .build();
+        Event event = Event.builder()
+                .eventBeanName(OrgUpdateEventListener.class.getSimpleName())
+                .eventParams(JSONObject.toJSONString(orgUpdateEvent))
+                .eventStatus(EventStatus.PROCESSING.name())
+                .eventType(EventTypes.OrgUpdate.name())
+                .build();
+        eventInnerService.save(event);
+        orgUpdateEvent.setEventId(event.getId());
+        eventPublisher.publishEvent(orgUpdateEvent);
         return CommonResult.success(updateResult);
     }
 

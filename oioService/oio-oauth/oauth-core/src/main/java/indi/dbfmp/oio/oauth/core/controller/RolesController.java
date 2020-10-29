@@ -2,16 +2,23 @@ package indi.dbfmp.oio.oauth.core.controller;
 
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import indi.dbfmp.oio.oauth.core.dto.condition.GroupCondition;
 import indi.dbfmp.oio.oauth.core.dto.condition.RolesCondition;
 import indi.dbfmp.oio.oauth.core.dto.webDto.BatchDelDto;
+import indi.dbfmp.oio.oauth.core.entity.Event;
 import indi.dbfmp.oio.oauth.core.entity.Groups;
 import indi.dbfmp.oio.oauth.core.entity.Roles;
+import indi.dbfmp.oio.oauth.core.enums.EventStatus;
+import indi.dbfmp.oio.oauth.core.enums.EventTypes;
 import indi.dbfmp.oio.oauth.core.event.update.GroupsUpdateEvent;
+import indi.dbfmp.oio.oauth.core.event.update.OrgUpdateEventListener;
 import indi.dbfmp.oio.oauth.core.event.update.RolesUpdateEvent;
+import indi.dbfmp.oio.oauth.core.event.update.RolesUpdateEventListener;
+import indi.dbfmp.oio.oauth.core.innerService.IEventInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IRolesInnerService;
 import indi.dbfmp.oio.oauth.core.uitls.QueryWrapperUtil;
 import indi.dbfmp.validator.core.annotation.ValidateBefore;
@@ -41,6 +48,8 @@ public class RolesController {
     private IRolesInnerService rolesInnerService;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+    @Autowired
+    private IEventInnerService eventInnerService;
 
     //增
     @RequestMapping("/add")
@@ -68,12 +77,21 @@ public class RolesController {
     @ValidateBefore(groups = UpdateGroup.class)
     public CommonResult<?> update(@RequestBody Roles roles) {
         boolean updateResult = rolesInnerService.updateById(roles);
-        eventPublisher.publishEvent(RolesUpdateEvent.builder()
+        RolesUpdateEvent rolesUpdateEvent = RolesUpdateEvent.builder()
                 .id(roles.getId())
                 .roleName(roles.getRoleName())
                 .orgId(roles.getOrgId())
                 .orgName(roles.getOrgName())
-                .build());
+                .build();
+        Event event = Event.builder()
+                .eventBeanName(RolesUpdateEventListener.class.getSimpleName())
+                .eventParams(JSONObject.toJSONString(rolesUpdateEvent))
+                .eventStatus(EventStatus.PROCESSING.name())
+                .eventType(EventTypes.RolesUpdate.name())
+                .build();
+        eventInnerService.save(event);
+        rolesUpdateEvent.setEventId(event.getId());
+        eventPublisher.publishEvent(rolesUpdateEvent);
         return CommonResult.success(updateResult);
     }
 

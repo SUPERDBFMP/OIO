@@ -2,13 +2,20 @@ package indi.dbfmp.oio.oauth.core.controller;
 
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import indi.dbfmp.oio.oauth.core.dto.condition.PositionCondition;
 import indi.dbfmp.oio.oauth.core.dto.webDto.BatchDelDto;
+import indi.dbfmp.oio.oauth.core.entity.Event;
 import indi.dbfmp.oio.oauth.core.entity.Position;
+import indi.dbfmp.oio.oauth.core.enums.EventStatus;
+import indi.dbfmp.oio.oauth.core.enums.EventTypes;
+import indi.dbfmp.oio.oauth.core.event.update.OrgUpdateEventListener;
 import indi.dbfmp.oio.oauth.core.event.update.PositionUpdateEvent;
+import indi.dbfmp.oio.oauth.core.event.update.PositionUpdateEventListener;
+import indi.dbfmp.oio.oauth.core.innerService.IEventInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IPositionInnerService;
 import indi.dbfmp.oio.oauth.core.uitls.QueryWrapperUtil;
 import indi.dbfmp.validator.core.annotation.ValidateBefore;
@@ -37,6 +44,8 @@ public class PositionController {
     private IPositionInnerService positionInnerService;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+    @Autowired
+    private IEventInnerService eventInnerService;
 
     //增
     @RequestMapping("/add")
@@ -64,11 +73,20 @@ public class PositionController {
     @ValidateBefore(groups = UpdateGroup.class)
     public CommonResult<?> update(@RequestBody Position position) {
         boolean updateResult = positionInnerService.updateById(position);
-        eventPublisher.publishEvent(PositionUpdateEvent.builder()
+        PositionUpdateEvent positionUpdateEvent = PositionUpdateEvent.builder()
                 .id(position.getId())
                 .positionCode(position.getPositionCode())
                 .positionName(position.getPositionName())
-                .build());
+                .build();
+        Event event = Event.builder()
+                .eventBeanName(PositionUpdateEventListener.class.getSimpleName())
+                .eventParams(JSONObject.toJSONString(positionUpdateEvent))
+                .eventStatus(EventStatus.PROCESSING.name())
+                .eventType(EventTypes.PositionUpdate.name())
+                .build();
+        eventInnerService.save(event);
+        positionUpdateEvent.setEventId(event.getId());
+        eventPublisher.publishEvent(positionUpdateEvent);
         return CommonResult.success(updateResult);
     }
 

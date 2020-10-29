@@ -2,16 +2,19 @@ package indi.dbfmp.oio.oauth.core.controller;
 
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import indi.dbfmp.oio.oauth.core.dto.condition.PermissionCondition;
-import indi.dbfmp.oio.oauth.core.dto.condition.RolesCondition;
 import indi.dbfmp.oio.oauth.core.dto.webDto.BatchDelDto;
+import indi.dbfmp.oio.oauth.core.entity.Event;
 import indi.dbfmp.oio.oauth.core.entity.Permission;
-import indi.dbfmp.oio.oauth.core.entity.Roles;
+import indi.dbfmp.oio.oauth.core.enums.EventStatus;
+import indi.dbfmp.oio.oauth.core.enums.EventTypes;
 import indi.dbfmp.oio.oauth.core.event.update.PermissionUpdateEvent;
-import indi.dbfmp.oio.oauth.core.event.update.RolesUpdateEvent;
+import indi.dbfmp.oio.oauth.core.event.update.PermissionUpdateEventListener;
+import indi.dbfmp.oio.oauth.core.innerService.IEventInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IPermissionInnerService;
 import indi.dbfmp.oio.oauth.core.uitls.QueryWrapperUtil;
 import indi.dbfmp.validator.core.annotation.ValidateBefore;
@@ -22,7 +25,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -41,6 +43,8 @@ public class PermissionController {
     private IPermissionInnerService permissionInnerService;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+    @Autowired
+    private IEventInnerService eventInnerService;
 
     //增
     @RequestMapping("/add")
@@ -68,13 +72,22 @@ public class PermissionController {
     @ValidateBefore(groups = UpdateGroup.class)
     public CommonResult<?> update(@RequestBody Permission permission) {
         boolean updateResult = permissionInnerService.updateById(permission);
-        eventPublisher.publishEvent(PermissionUpdateEvent.builder()
+        PermissionUpdateEvent permissionUpdateEvent = PermissionUpdateEvent.builder()
                 .id(permission.getId())
                 .permissionCode(permission.getPermissionCode())
                 .permissionName(permission.getPermissionName())
                 .orgId(permission.getOrgId())
                 .orgName(permission.getOrgName())
-                .build());
+                .build();
+        Event event = Event.builder()
+                .eventBeanName(PermissionUpdateEventListener.class.getSimpleName())
+                .eventParams(JSONObject.toJSONString(permissionUpdateEvent))
+                .eventStatus(EventStatus.PROCESSING.name())
+                .eventType(EventTypes.PermissionUpdate.name())
+                .build();
+        eventInnerService.save(event);
+        permissionUpdateEvent.setEventId(event.getId());
+        eventPublisher.publishEvent(permissionUpdateEvent);
         return CommonResult.success(updateResult);
     }
 

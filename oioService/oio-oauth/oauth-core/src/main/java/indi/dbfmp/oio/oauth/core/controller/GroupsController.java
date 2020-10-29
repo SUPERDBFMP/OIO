@@ -2,16 +2,18 @@ package indi.dbfmp.oio.oauth.core.controller;
 
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import indi.dbfmp.oio.oauth.core.dto.condition.GroupCondition;
-import indi.dbfmp.oio.oauth.core.dto.condition.OrgCondition;
-import indi.dbfmp.oio.oauth.core.dto.webDto.BatchDelDto;
+import indi.dbfmp.oio.oauth.core.entity.Event;
 import indi.dbfmp.oio.oauth.core.entity.Groups;
-import indi.dbfmp.oio.oauth.core.entity.Org;
+import indi.dbfmp.oio.oauth.core.enums.EventStatus;
+import indi.dbfmp.oio.oauth.core.enums.EventTypes;
 import indi.dbfmp.oio.oauth.core.event.update.GroupsUpdateEvent;
-import indi.dbfmp.oio.oauth.core.event.update.OrgUpdateEvent;
+import indi.dbfmp.oio.oauth.core.event.update.GroupsUpdateEventListener;
+import indi.dbfmp.oio.oauth.core.innerService.IEventInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IGroupsInnerService;
 import indi.dbfmp.oio.oauth.core.uitls.QueryWrapperUtil;
 import indi.dbfmp.validator.core.annotation.ValidateBefore;
@@ -22,7 +24,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -41,6 +42,8 @@ public class GroupsController {
     private IGroupsInnerService groupsInnerService;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+    @Autowired
+    private IEventInnerService eventInnerService;
 
     //增
     @RequestMapping("/add")
@@ -68,11 +71,20 @@ public class GroupsController {
     @ValidateBefore(groups = UpdateGroup.class)
     public CommonResult<?> update(@RequestBody Groups groups) {
         boolean updateResult = groupsInnerService.updateById(groups);
-        eventPublisher.publishEvent(GroupsUpdateEvent.builder()
+        GroupsUpdateEvent groupsUpdateEvent = GroupsUpdateEvent.builder()
                 .id(groups.getId())
                 .groupCode(groups.getGroupCode())
                 .groupName(groups.getGroupName())
-                .build());
+                .build();
+        Event event = Event.builder()
+                .eventBeanName(GroupsUpdateEventListener.class.getSimpleName())
+                .eventParams(JSONObject.toJSONString(groupsUpdateEvent))
+                .eventStatus(EventStatus.PROCESSING.name())
+                .eventType(EventTypes.GroupsUpdate.name())
+                .build();
+        eventInnerService.save(event);
+        groupsUpdateEvent.setEventId(event.getId());
+        eventPublisher.publishEvent(groupsUpdateEvent);
         return CommonResult.success(updateResult);
     }
 

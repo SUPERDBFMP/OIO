@@ -1,9 +1,10 @@
 package indi.dbfmp.oio.oauth.core.event.update;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import indi.dbfmp.oio.oauth.core.event.BaseEvent;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -14,11 +15,12 @@ import lombok.NoArgsConstructor;
  * @name: PermissionUpdateEvent
  * @since 2020/10/24 10:49 下午
  */
-@Builder
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PermissionUpdateEvent {
+public class PermissionUpdateEvent extends BaseEvent{
 
     /**
      * 主键id
