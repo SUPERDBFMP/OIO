@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class GroupsUpdateEventListener implements RecoveryEvent {
+public class GroupsUpdateEventListener implements RecoveryEvent<GroupsUpdateEvent> {
 
     @Autowired
     private IGroupRoleInnerService groupRoleInnerService;
@@ -43,9 +43,21 @@ public class GroupsUpdateEventListener implements RecoveryEvent {
     @Autowired
     private IEventInnerService eventInnerService;
 
-    @Async("updateMiddleTablePool")
-    @EventListener
-    public void groupUpdateEvent(GroupsUpdateEvent groupsUpdateEvent) {
+
+    /**
+     * 恢复通知操作
+     * <p>
+     * 把json格式的event事件转换为实际参数，进行调用
+     *
+     * @param eventJsonParams eventJsonParams
+     */
+    @Override
+    public void recoveryEventAction(String eventJsonParams) {
+        GroupsUpdateEvent event = JSONObject.parseObject(eventJsonParams,GroupsUpdateEvent.class);
+        this.eventAction(event);
+    }
+
+    public void eventAction(GroupsUpdateEvent groupsUpdateEvent) {
         log.info("收到group更新事件,groupsUpdateEvent:{}",groupsUpdateEvent);
         if (StrUtil.isBlank(groupsUpdateEvent.getId())) {
             log.warn("groupsUpdateEvent,警告！更新事件主键id为空！");
@@ -88,18 +100,5 @@ public class GroupsUpdateEventListener implements RecoveryEvent {
                 lock.unlock();
             }
         }
-    }
-
-    /**
-     * 恢复通知操作
-     * <p>
-     * 把json格式的event事件转换为实际参数，进行调用
-     *
-     * @param eventJsonParams eventJsonParams
-     */
-    @Override
-    public void recoveryEventAction(String eventJsonParams) {
-        GroupsUpdateEvent event = JSONObject.parseObject(eventJsonParams,GroupsUpdateEvent.class);
-        this.groupUpdateEvent(event);
     }
 }

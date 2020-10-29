@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class PermissionUpdateEventListener implements RecoveryEvent {
+public class PermissionUpdateEventListener implements RecoveryEvent<PermissionUpdateEvent> {
 
     @Autowired
     private IRolePermissionInnerService rolePermissionInnerService;
@@ -42,10 +42,7 @@ public class PermissionUpdateEventListener implements RecoveryEvent {
     @Autowired
     private IEventInnerService eventInnerService;
 
-
-    @Async("updateMiddleTablePool")
-    @EventListener
-    public void permissionUpdateEvent(PermissionUpdateEvent updateEvent) {
+    public void eventAction(PermissionUpdateEvent updateEvent) {
         log.info("收到permission更新事件,permissionUpdateEvent:{}",updateEvent);
         if (StrUtil.isBlank(updateEvent.getId())) {
             log.warn("permissionUpdateEvent,警告！更新事件主键id为空！");
@@ -90,6 +87,6 @@ public class PermissionUpdateEventListener implements RecoveryEvent {
     @Override
     public void recoveryEventAction(String eventJsonParams) {
         PermissionUpdateEvent event = JSONObject.parseObject(eventJsonParams,PermissionUpdateEvent.class);
-        this.permissionUpdateEvent(event);
+        this.eventAction(event);
     }
 }

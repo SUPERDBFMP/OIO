@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class RolesUpdateEventListener implements RecoveryEvent {
+public class RolesUpdateEventListener implements RecoveryEvent<RolesUpdateEvent> {
 
     @Autowired
     private IGroupRoleInnerService groupRoleInnerService;
@@ -43,9 +43,7 @@ public class RolesUpdateEventListener implements RecoveryEvent {
     @Autowired
     private IEventInnerService eventInnerService;
 
-    @Async("updateMiddleTablePool")
-    @EventListener
-    public void roleUpdateEvent(RolesUpdateEvent updateEvent) {
+    public void eventAction(RolesUpdateEvent updateEvent) {
         log.info("收到role更新事件,roleUpdateEvent:{}",updateEvent);
         if (StrUtil.isBlank(updateEvent.getId())) {
             log.warn("roleUpdateEvent,警告！更新事件主键id为空！");
@@ -95,6 +93,6 @@ public class RolesUpdateEventListener implements RecoveryEvent {
     @Override
     public void recoveryEventAction(String eventJsonParams) {
         RolesUpdateEvent event = JSONObject.parseObject(eventJsonParams,RolesUpdateEvent.class);
-        this.roleUpdateEvent(event);
+        this.eventAction(event);
     }
 }

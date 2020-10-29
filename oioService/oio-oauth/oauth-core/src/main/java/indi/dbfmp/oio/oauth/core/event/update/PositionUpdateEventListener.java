@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class PositionUpdateEventListener implements RecoveryEvent {
+public class PositionUpdateEventListener implements RecoveryEvent<PositionUpdateEvent> {
 
     @Autowired
     private IPositionGroupInnerService positionGroupInnerService;
@@ -41,9 +41,8 @@ public class PositionUpdateEventListener implements RecoveryEvent {
     @Autowired
     private IEventInnerService eventInnerService;
 
-    @Async("updateMiddleTablePool")
-    @EventListener
-    public void positionUpdateEvent(PositionUpdateEvent updateEvent) {
+
+    public void eventAction(PositionUpdateEvent updateEvent) {
         log.info("收到position更新事件,positionUpdateEvent:{}",updateEvent);
         if (StrUtil.isBlank(updateEvent.getId())) {
             log.warn("positionUpdateEvent,警告！更新事件主键id为空！");
@@ -92,6 +91,6 @@ public class PositionUpdateEventListener implements RecoveryEvent {
     @Override
     public void recoveryEventAction(String eventJsonParams) {
         PositionUpdateEvent event = JSONObject.parseObject(eventJsonParams,PositionUpdateEvent.class);
-        this.positionUpdateEvent(event);
+        this.eventAction(event);
     }
 }

@@ -1,6 +1,9 @@
 server:
   port: 9301
 spring:
+  aop:
+    proxy-target-class: true
+    auto: true
   application:
     name: oio-oauth-core
   freemarker:

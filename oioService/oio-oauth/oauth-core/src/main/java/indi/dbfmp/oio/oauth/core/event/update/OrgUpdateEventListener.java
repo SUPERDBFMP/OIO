@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class OrgUpdateEventListener implements RecoveryEvent {
+public class OrgUpdateEventListener implements RecoveryEvent<OrgUpdateEvent> {
 
     @Autowired
     private IPositionInnerService positionInnerService;
@@ -46,9 +46,8 @@ public class OrgUpdateEventListener implements RecoveryEvent {
     private IEventInnerService eventInnerService;
     //todo 更多表更新
 
-    @Async("updateMiddleTablePool")
-    @EventListener
-    public void orgUpdateEvent(OrgUpdateEvent orgUpdateEvent) {
+
+    public void eventAction(OrgUpdateEvent orgUpdateEvent) {
         log.info("收到org更新事件,orgUpdateEvent:{}",orgUpdateEvent);
         if (StrUtil.isBlank(orgUpdateEvent.getId())) {
             log.warn("orgUpdateEvent,警告！更新事件主键id为空！");
@@ -93,6 +92,6 @@ public class OrgUpdateEventListener implements RecoveryEvent {
     @Override
     public void recoveryEventAction(String eventJsonParams) {
         OrgUpdateEvent event = JSONObject.parseObject(eventJsonParams,OrgUpdateEvent.class);
-        this.orgUpdateEvent(event);
+        this.eventAction(event);
     }
 }
