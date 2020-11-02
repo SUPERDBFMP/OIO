@@ -8,8 +8,6 @@ import indi.dbfmp.oio.oauth.core.enums.EventStatus;
 import indi.dbfmp.oio.oauth.core.event.RecoveryEvent;
 import indi.dbfmp.oio.oauth.core.innerService.IEventInnerService;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -54,7 +52,7 @@ public class EventCompensationScheduleService {
                 eventInnerService.updateById(event);
                 continue;
             }
-           recoveryEvent.recoveryEventAction(event.getEventParams());
+           recoveryEvent.recoveryEventAction(event.getId(), event.getEventParams());
         }
     }
 

@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -78,6 +79,18 @@ public final class RedisUtil {
             }
         }
     }
+
+    /**
+     * 删除缓存
+     * @param keys 可以传一个值 或多个
+     */
+    @SuppressWarnings("unchecked")
+    public void del(Collection<String> keys) {
+        if (keys != null && keys.size() > 0) {
+            redisTemplate.delete(keys);
+        }
+    }
+
     // ============================String=============================
     /**
      * 普通缓存获取

@@ -1,7 +1,5 @@
 package indi.dbfmp.oio.oauth.core.event;
 
-import org.springframework.context.event.EventListener;
-
 /**
  * <p>
  *  恢复通知接口
@@ -18,9 +16,10 @@ public interface RecoveryEvent<T extends BaseEvent> {
      *
      * 把json格式的event事件转换为实际参数，进行调用
      *
+     * @param eventId 事件id
      * @param eventJsonParams eventJsonParams
      */
-    void recoveryEventAction(String eventJsonParams);
+    void recoveryEventAction(String eventId,String eventJsonParams);
 
     void eventAction(T event);
 

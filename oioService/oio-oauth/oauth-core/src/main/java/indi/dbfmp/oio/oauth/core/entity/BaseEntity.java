@@ -68,7 +68,7 @@ public class BaseEntity implements Serializable {
     @Version
     private Integer version;
 
-    @TableLogic
+    //@TableLogic
     private Integer deleted;
 
     public static final String ID = "id";

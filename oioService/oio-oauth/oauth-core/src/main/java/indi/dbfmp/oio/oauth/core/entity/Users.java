@@ -62,7 +62,7 @@ public class Users extends BaseEntity {
     /**
      * 用户是否可登录,0:可登录,1不可登录
      */
-    private String loginFlag;
+    private Integer loginFlag;
 
 
 }

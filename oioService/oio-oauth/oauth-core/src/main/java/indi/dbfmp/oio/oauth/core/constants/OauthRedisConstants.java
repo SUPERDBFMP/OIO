@@ -15,6 +15,8 @@ public class OauthRedisConstants {
      * ${url}:${userId}
      */
     public final static String URL_ROLE_CHECK = "UrlRoleCheck:{}:{}";
-    public final static String URL_PERMISSION_CHECK = "UrlRoleCheck:{}:{}";
+    public final static String URL_ROLE_CHECK_ANT_MATCH = "UrlRoleCheck:**:{}";
+    public final static String URL_PERMISSION_CHECK = "UrlPermissionCheck:{}:{}";
+    public final static String URL_PERMISSION_ANT_MATCH = "UrlPermissionCheck:**:{}";
 
 }
