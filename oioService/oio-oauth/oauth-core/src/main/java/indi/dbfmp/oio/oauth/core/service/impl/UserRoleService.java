@@ -2,6 +2,7 @@ package indi.dbfmp.oio.oauth.core.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import indi.dbfmp.oio.oauth.core.dto.UserRoleGroupDto;
 import indi.dbfmp.oio.oauth.core.entity.*;
 import indi.dbfmp.oio.oauth.core.event.update.UserRolePermissionUpdateEvent;
 import indi.dbfmp.oio.oauth.core.exception.CommonException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -100,7 +102,7 @@ public class UserRoleService {
         });
         try {
             userRoleServiceTransaction.grantNewRolesToUser(userRoleList, userPermissionList);
-            //todo 发送更新事件
+            //发送更新事件
             eventPublisher.publishEvent(UserRolePermissionUpdateEvent.builder()
                     .userId(userId)
                     .build());
@@ -109,6 +111,42 @@ public class UserRoleService {
             log.error("事务授权用户角色失败！",e);
             return false;
         }
+    }
+
+    /**
+     * 删除用户角色
+     * @param userId 用户id
+     * @param userRoleGroupDtoList 用户
+     * @return 是否删除成功
+     */
+    public boolean removeRolesFromUser(String userId,List<UserRoleGroupDto> userRoleGroupDtoList) {
+        //检查用户
+        Users queryUser = usersInnerService.getById(userId);
+        if (null != queryUser && StatusEnums.UN_VALID.getCode() != queryUser.getLoginFlag()) {
+            throw new CommonException("用户被封禁，无法授权");
+        }
+        //查询角色
+        List<Roles> rolesList = rolesInnerService.listByIds(userRoleGroupDtoList.stream().map(UserRoleGroupDto::getRoleId).collect(Collectors.toList()));
+        if (CollectionUtil.isEmpty(rolesList)) {
+            return true;
+        }
+        //查询权限
+        List<RolePermission> rolePermissionList = rolePermissionInnerService.lambdaQuery().in(RolePermission::getRoleId, userRoleGroupDtoList.stream().map(UserRoleGroupDto::getRoleId).collect(Collectors.toList()))
+                .in(RolePermission::getGroupId, userRoleGroupDtoList.stream().map(UserRoleGroupDto::getGroupId).collect(Collectors.toList()))
+                .list();
+
+        try {
+            userRoleServiceTransaction.removeRolesFromUser(userId, userRoleGroupDtoList, rolePermissionList);
+            //发送更新事件
+            eventPublisher.publishEvent(UserRolePermissionUpdateEvent.builder()
+                    .userId(userId)
+                    .build());
+            return true;
+        } catch (Exception e) {
+            log.error("事务删除用户角色失败！",e);
+            return false;
+        }
+
     }
 
 
