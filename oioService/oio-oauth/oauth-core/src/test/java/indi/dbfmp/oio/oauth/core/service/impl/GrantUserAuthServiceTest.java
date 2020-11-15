@@ -30,7 +30,7 @@ public class GrantUserAuthServiceTest extends SpringTest {
                 .userId("1")
                 .positionIdList(Arrays.asList("823721","902841"))
                 .build();
-        grantAuthService.grantAuthToUser(grantAuthDto);
+        //grantAuthService.grantAuthToUser(grantAuthDto);
     }
 
 }

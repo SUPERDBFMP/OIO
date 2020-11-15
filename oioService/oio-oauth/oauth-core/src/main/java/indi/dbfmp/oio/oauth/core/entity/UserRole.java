@@ -42,14 +42,19 @@ public class UserRole extends BaseEntity {
     private String userId;
 
     /**
-     * 分组id
+     * 用户名
      */
-    private String groupId;
+    private String userName;
 
     /**
-     * 分组名
+     * 组织机构id
      */
-    private String groupName;
+    private String orgId;
+
+    /**
+     * 组织机构名
+     */
+    private String orgName;
 
 
     public static final String ROLE_ID = "role_id";
@@ -58,8 +63,10 @@ public class UserRole extends BaseEntity {
 
     public static final String USER_ID = "user_id";
 
-    public static final String GROUP_ID = "group_id";
+    public static final String USER_NAME = "user_name";
 
-    public static final String GROUP_NAME = "group_name";
+    public static final String ORG_ID = "org_id";
+
+    public static final String ORG_NAME = "org_name";
 
 }

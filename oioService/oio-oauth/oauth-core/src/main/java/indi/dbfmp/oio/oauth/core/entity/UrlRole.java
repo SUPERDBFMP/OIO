@@ -27,19 +27,19 @@ public class UrlRole extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 分组id
+     * 组织机构id
      */
-    private String groupId;
+    private String orgId;
+
+    /**
+     * 组织机构名
+     */
+    private String orgName;
 
     /**
      * 角色id
      */
     private String roleId;
-
-    /**
-     * 分组名
-     */
-    private String groupName;
 
     /**
      * 角色名
@@ -52,11 +52,11 @@ public class UrlRole extends BaseEntity {
     private String url;
 
 
-    public static final String GROUP_ID = "group_id";
+    public static final String ORG_ID = "org_id";
 
     public static final String ROLE_ID = "role_id";
 
-    public static final String GROUP_NAME = "group_name";
+    public static final String ORG_NAME = "org_name";
 
     public static final String ROLE_NAME = "role_name";
 

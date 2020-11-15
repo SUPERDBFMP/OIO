@@ -29,13 +29,9 @@ public class GroupsUpdateEventListener implements RecoveryEvent<GroupsUpdateEven
     @Autowired
     private IGroupRoleInnerService groupRoleInnerService;
     @Autowired
-    private IPositionGroupInnerService positionGroupInnerService;
-    @Autowired
     private IRolePermissionInnerService rolePermissionInnerService;
     @Autowired
     private IUrlPermissionInnerService urlPermissionInnerService;
-    @Autowired
-    private IPositionRoleInnerService positionRoleInnerService;
     @Autowired
     private RedissonClient redissonClient;
     @Autowired
@@ -86,17 +82,10 @@ public class GroupsUpdateEventListener implements RecoveryEvent<GroupsUpdateEven
                 .groupName(groupsUpdateEvent.getGroupName())
                 .build();
         groupRoleInnerService.update(groupRole, new LambdaQueryWrapper<GroupRole>().eq(GroupRole::getGroupId, groupsUpdateEvent.getId()));
-        PositionGroup positionGroup = PositionGroup.builder()
-                .groupId(groupsUpdateEvent.getId())
-                .groupName(groupsUpdateEvent.getGroupName())
-                .build();
-        positionGroupInnerService.update(positionGroup, new LambdaQueryWrapper<PositionGroup>().eq(PositionGroup::getGroupId, groupsUpdateEvent.getId()));
         RolePermission rolePermission = RolePermission.builder().groupId(groupsUpdateEvent.getId()).groupName(groupsUpdateEvent.getGroupName()).build();
         rolePermissionInnerService.update(rolePermission, new LambdaQueryWrapper<RolePermission>().eq(RolePermission::getGroupId, groupsUpdateEvent.getId()));
         UrlPermission urlPermission = UrlPermission.builder().groupId(groupsUpdateEvent.getId()).groupName(groupsUpdateEvent.getGroupName()).build();
         urlPermissionInnerService.update(urlPermission, new LambdaQueryWrapper<UrlPermission>().eq(UrlPermission::getGroupId, groupsUpdateEvent.getId()));
-        PositionRole positionRole = PositionRole.builder().groupId(groupsUpdateEvent.getId()).groupName(groupsUpdateEvent.getGroupName()).build();
-        positionRoleInnerService.update(positionRole, new LambdaQueryWrapper<PositionRole>().eq(PositionRole::getGroupId, groupsUpdateEvent.getId()));
         event.setEventStatus(EventStatus.SUCCESS.name());
         event.setRemarks("更新成功！");
         eventInnerService.updateById(event);

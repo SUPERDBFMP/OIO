@@ -6,13 +6,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import indi.dbfmp.oio.oauth.core.entity.Event;
 import indi.dbfmp.oio.oauth.core.entity.Groups;
 import indi.dbfmp.oio.oauth.core.entity.Permission;
-import indi.dbfmp.oio.oauth.core.entity.Position;
 import indi.dbfmp.oio.oauth.core.enums.EventStatus;
 import indi.dbfmp.oio.oauth.core.event.RecoveryEvent;
 import indi.dbfmp.oio.oauth.core.innerService.IEventInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IGroupsInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IPermissionInnerService;
-import indi.dbfmp.oio.oauth.core.innerService.IPositionInnerService;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -33,8 +31,6 @@ import org.springframework.stereotype.Component;
 public class OrgUpdateEventListener implements RecoveryEvent<OrgUpdateEvent> {
 
     @Autowired
-    private IPositionInnerService positionInnerService;
-    @Autowired
     private IPermissionInnerService permissionInnerService;
     @Autowired
     private IGroupsInnerService groupsInnerService;
@@ -54,8 +50,6 @@ public class OrgUpdateEventListener implements RecoveryEvent<OrgUpdateEvent> {
         Event event = new Event();
         event.setEventStatus(EventStatus.PROCESSING.name());
         eventInnerService.updateById(event);
-        Position position = Position.builder().orgId(orgUpdateEvent.getId()).orgName(orgUpdateEvent.getOrgName()).build();
-        positionInnerService.update(position, new LambdaQueryWrapper<Position>().eq(Position::getOrgId, orgUpdateEvent.getOrgName()));
         Permission permission = Permission.builder().orgId(orgUpdateEvent.getId()).orgName(orgUpdateEvent.getOrgName()).build();
         permissionInnerService.update(permission, new LambdaQueryWrapper<Permission>().eq(Permission::getOrgId, orgUpdateEvent.getId()));
         Groups groups = Groups.builder().orgId(orgUpdateEvent.getId()).orgName(orgUpdateEvent.getOrgName()).build();

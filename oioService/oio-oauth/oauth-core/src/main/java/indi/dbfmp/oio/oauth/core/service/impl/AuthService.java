@@ -12,11 +12,16 @@ import indi.dbfmp.oio.oauth.core.innerService.*;
 import indi.dbfmp.validator.core.annotation.ValidateBefore;
 import inid.dbfmp.oauth.api.enums.StatusEnums;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RMap;
 import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,8 +63,20 @@ public class AuthService {
     private final static int permissionCheckExpTime = 60 * 60;
 
     /**
+     * url缓存
+     */
+    private RMap<String,List<String>> urlCacheMap;
+
+    @PostConstruct
+    public void initUrlCache() {
+        //初始化url缓存
+
+    }
+
+    /**
      * 角色检查
      *
+     * 建立URL缓存
      *
      * @param roleCheckDto roleCheckDto
      * @return 是否拥有权限
@@ -77,33 +94,48 @@ public class AuthService {
             return roleCheck;
         }
         RSet<String> userCacheIdSet = redissonClient.getSet(roleCheckDto.getUserId());
-        //获取url对应的角色
-        List<UrlRole> urlRoleList = urlRoleInnerService.list(new LambdaQueryWrapper<UrlRole>().eq(UrlRole::getUrl,roleCheckDto.getUrl()));
+        //获取组织机构下对应的所有URL
+        List<UrlRole> urlRoleList = urlRoleInnerService.list(urlRoleInnerService.lambdaQuery().eq(UrlRole::getOrgId,roleCheckDto.getOrgId()));
         if (CollectionUtil.isEmpty(urlRoleList)) {
+            log.info("orgId:{},下无URL角色配置",roleCheckDto.getOrgId());
             String urlRoleCacheKey = StrUtil.format(OauthRedisConstants.URL_ROLE_CHECK,roleCheckDto.getUrl(),roleCheckDto.getUserId());
             userCacheIdSet.add(urlRoleCacheKey);
             redisUtil.set(urlRoleCacheKey,Boolean.FALSE,roleCheckExpTime);
             return false;
         }
-        List<String> urlGroupList = urlRoleList.stream().map(UrlRole::getGroupId).collect(toList());
-        //根据group获取用户角色
-        List<UserRole> userRoleList = userRoleInnerService.list(new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId,roleCheckDto.getUserId()).in(UserRole::getGroupId,urlGroupList));
+        //匹配url
+        List<UrlRole> matchUrlRoleList = new ArrayList<>();
+        PathMatcher pathMatcher = new AntPathMatcher();
+        for (UrlRole urlRole : urlRoleList) {
+            if (pathMatcher.match(urlRole.getUrl(), roleCheckDto.getUrl())) {
+                matchUrlRoleList.add(urlRole);
+            }
+        }
+        if (CollectionUtil.isEmpty(matchUrlRoleList)) {
+            log.info("无匹配的URL,URL:{}",roleCheckDto.getUrl());
+            String urlRoleCacheKey = StrUtil.format(OauthRedisConstants.URL_ROLE_CHECK,roleCheckDto.getUrl(),roleCheckDto.getUserId());
+            userCacheIdSet.add(urlRoleCacheKey);
+            redisUtil.set(urlRoleCacheKey,Boolean.FALSE,roleCheckExpTime);
+            return false;
+        }
+        //根据orgId获取用户角色
+        List<UserRole> userRoleList = userRoleInnerService.list(userRoleInnerService.lambdaQuery().eq(UserRole::getOrgId,roleCheckDto.getOrgId()).eq(UserRole::getUserId,roleCheckDto.getUserId()));
         if (CollectionUtil.isEmpty(userRoleList)) {
+            log.info("用户ID:{},OrgId:{},无角色",roleCheckDto.getUserId(),roleCheckDto.getOrgId());
             String urlRoleCacheKey = StrUtil.format(OauthRedisConstants.URL_ROLE_CHECK,roleCheckDto.getUrl(),roleCheckDto.getUserId());
             userCacheIdSet.add(urlRoleCacheKey);
             redisUtil.set(urlRoleCacheKey,Boolean.FALSE,roleCheckExpTime);
             return false;
         }
         /*查看用户是否拥有此角色*/
-        //url角色分组筛选处理
-        Map<String, Set<String>> urlRoleIdSetByGroup = urlRoleList.stream().collect(Collectors.groupingBy(UrlRole::getGroupId,Collectors.mapping(UrlRole::getRoleId,toSet())));
-        for (UserRole userRole : userRoleList) {
-            Set<String> urlRoleIdSet = urlRoleIdSetByGroup.get(userRole.getGroupId());
-            if (urlRoleIdSet.contains(userRole.getRoleId())) {
-                String urlRoleCacheKey = StrUtil.format(OauthRedisConstants.URL_ROLE_CHECK,roleCheckDto.getUrl(),roleCheckDto.getUserId());
-                userCacheIdSet.add(urlRoleCacheKey);
-                redisUtil.set(urlRoleCacheKey,Boolean.TRUE,roleCheckExpTime);
-                return true;
+        for (UrlRole urlRole : matchUrlRoleList) {
+            for (UserRole userRole : userRoleList) {
+                if (urlRole.getRoleId().equals(userRole.getRoleId())) {
+                    String urlRoleCacheKey = StrUtil.format(OauthRedisConstants.URL_ROLE_CHECK,roleCheckDto.getUrl(),roleCheckDto.getUserId());
+                    userCacheIdSet.add(urlRoleCacheKey);
+                    redisUtil.set(urlRoleCacheKey,Boolean.TRUE,roleCheckExpTime);
+                    return true;
+                }
             }
         }
         String urlRoleCacheKey = StrUtil.format(OauthRedisConstants.URL_ROLE_CHECK,roleCheckDto.getUrl(),roleCheckDto.getUserId());
@@ -132,32 +164,43 @@ public class AuthService {
         }
         RSet<String> userCacheIdSet = redissonClient.getSet(permissionCheckDto.getUserId());
         //获取url对应的权限
-        List<UrlPermission> urlPermissionList = urlPermissionInnerService.list(new LambdaQueryWrapper<UrlPermission>().eq(UrlPermission::getUrl,permissionCheckDto.getUrl()));
+        //fixme 可能查询出来结果太多
+        List<UrlPermission> urlPermissionList = urlPermissionInnerService.list(urlPermissionInnerService.lambdaQuery().eq(UrlPermission::getOrgId,permissionCheckDto.getOrgId()));
         if (CollectionUtil.isEmpty(urlPermissionList)) {
+            log.info("orgId:{},下无URL权限配置",permissionCheckDto.getOrgId());
             String urlPermissionCacheKey = StrUtil.format(OauthRedisConstants.URL_PERMISSION_CHECK,permissionCheckDto.getUrl(),permissionCheckDto.getUserId());
             userCacheIdSet.add(urlPermissionCacheKey);
             redisUtil.set(urlPermissionCacheKey,Boolean.FALSE,permissionCheckExpTime);
             return false;
         }
-        List<String> urlGroupList = urlPermissionList.stream().map(UrlPermission::getGroupId).collect(toList());
-        //根据group获取用户权限
-        List<UserPermission> userPermissionList = userPermissionInnerService.list(new LambdaQueryWrapper<UserPermission>().eq(UserPermission::getUserId,permissionCheckDto.getUserId()).in(UserPermission::getGroupId,urlGroupList));
+        //匹配url
+        List<UrlPermission> matchUrlPermissionList = new ArrayList<>();
+        PathMatcher pathMatcher = new AntPathMatcher();
+        for (UrlPermission urlPermission : urlPermissionList) {
+            if (pathMatcher.match(urlPermission.getUrl(), permissionCheckDto.getUrl())) {
+                matchUrlPermissionList.add(urlPermission);
+            }
+        }
+        //根据orgId获取用户权限
+        List<UserPermission> userPermissionList = userPermissionInnerService.list(userPermissionInnerService.lambdaQuery()
+                .eq(UserPermission::getOrgId,permissionCheckDto.getOrgId())
+                .eq(UserPermission::getUserId,permissionCheckDto.getUserId()));
         if (CollectionUtil.isEmpty(userPermissionList)) {
-            String urlPermissionCacheKey = StrUtil.format(OauthRedisConstants.URL_PERMISSION_CHECK,permissionCheckDto.getUrl(),permissionCheckDto.getUserId());
-            userCacheIdSet.add(urlPermissionCacheKey);
-            redisUtil.set(urlPermissionCacheKey,Boolean.FALSE,permissionCheckExpTime);
+            log.info("用户ID:{},OrgId:{},无权限",permissionCheckDto.getUserId(),permissionCheckDto.getOrgId());
+            String urlRoleCacheKey = StrUtil.format(OauthRedisConstants.URL_PERMISSION_CHECK,permissionCheckDto.getUrl(),permissionCheckDto.getUserId());
+            userCacheIdSet.add(urlRoleCacheKey);
+            redisUtil.set(urlRoleCacheKey,Boolean.FALSE,roleCheckExpTime);
             return false;
         }
         /*查看用户是否拥有此权限*/
-        //url权限分组筛选处理
-        Map<String, Set<String>> urlPermissionIdSetByGroup = urlPermissionList.stream().collect(Collectors.groupingBy(UrlPermission::getGroupId,Collectors.mapping(UrlPermission::getPermissionId,toSet())));
-        for (UserPermission userPermission : userPermissionList) {
-            Set<String> urlPermissionIdSet = urlPermissionIdSetByGroup.get(userPermission.getGroupId());
-            if (urlPermissionIdSet.contains(userPermission.getPermissionId())) {
-                String urlPermissionCacheKey = StrUtil.format(OauthRedisConstants.URL_PERMISSION_CHECK,permissionCheckDto.getUrl(),permissionCheckDto.getUserId());
-                userCacheIdSet.add(urlPermissionCacheKey);
-                redisUtil.set(urlPermissionCacheKey,Boolean.TRUE,permissionCheckExpTime);
-                return true;
+        for (UrlPermission urlPermission : matchUrlPermissionList) {
+            for (UserPermission userPermission : userPermissionList) {
+                if (urlPermission.getPermissionId().equals(userPermission.getPermissionId())) {
+                    String urlRoleCacheKey = StrUtil.format(OauthRedisConstants.URL_PERMISSION_CHECK,permissionCheckDto.getUrl(),permissionCheckDto.getUserId());
+                    userCacheIdSet.add(urlRoleCacheKey);
+                    redisUtil.set(urlRoleCacheKey,Boolean.TRUE,roleCheckExpTime);
+                    return true;
+                }
             }
         }
         String urlPermissionCacheKey = StrUtil.format(OauthRedisConstants.URL_PERMISSION_CHECK,permissionCheckDto.getUrl(),permissionCheckDto.getUserId());

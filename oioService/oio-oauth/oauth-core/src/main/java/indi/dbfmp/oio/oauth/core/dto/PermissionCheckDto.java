@@ -24,5 +24,7 @@ public class PermissionCheckDto {
     private String url;
     @NotBlank(message = "权限检查用户ID不能为空")
     private String userId;
+    @NotBlank(message = "组织机构ID不能为空")
+    private String orgId;
 
 }

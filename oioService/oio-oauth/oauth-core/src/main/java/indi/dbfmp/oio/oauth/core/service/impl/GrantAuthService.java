@@ -34,12 +34,6 @@ public class GrantAuthService {
     @Autowired
     private IGroupsInnerService groupsInnerService;
     @Autowired
-    private IPositionGroupInnerService positionGroupInnerService;
-    @Autowired
-    private IPositionInnerService positionInnerService;
-    @Autowired
-    private IPositionRoleInnerService positionRoleInnerService;
-    @Autowired
     private IRolesInnerService rolesInnerService;
     @Autowired
     private IPermissionInnerService permissionInnerService;
@@ -52,9 +46,9 @@ public class GrantAuthService {
      * 用户授权
      * @param authDto 授权数据
      */
-    @ValidateBefore
+    /*@ValidateBefore
     public void grantAuthToUser(GrantAuthDto authDto) {
-        /*检查权限合法性*/
+        *//*检查权限合法性*//*
         //检查orgId，groupId
         if (orgInnerService.count(new LambdaQueryWrapper<Org>().eq(Org::getId, authDto.getOrgId())) <= 0) {
             log.error("grantAuthToUser,组织机构无效->OrgId:{}",authDto.getOrgId());
@@ -144,6 +138,6 @@ public class GrantAuthService {
                 grantUserAuthServiceTransaction.saveUserAuth(authDto.getUserId(), authDto.getGroupId(), groups.getGroupName(), positionList, roleList, null);
             }
         }
-    }
+    }*/
 
 }

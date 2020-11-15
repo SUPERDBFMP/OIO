@@ -29,8 +29,6 @@ public class RolesUpdateEventListener implements RecoveryEvent<RolesUpdateEvent>
     @Autowired
     private IGroupRoleInnerService groupRoleInnerService;
     @Autowired
-    private IPositionRoleInnerService positionRoleInnerService;
-    @Autowired
     private IRolePermissionInnerService rolePermissionInnerService;
     @Autowired
     private IUrlRoleInnerService urlRoleInnerService;
@@ -52,8 +50,6 @@ public class RolesUpdateEventListener implements RecoveryEvent<RolesUpdateEvent>
         eventInnerService.updateById(event);
         GroupRole groupRole = GroupRole.builder().roleId(updateEvent.getId()).roleName(updateEvent.getRoleName()).build();
         groupRoleInnerService.update(groupRole, new LambdaQueryWrapper<GroupRole>().eq(GroupRole::getRoleId, updateEvent.getId()));
-        PositionRole positionRole = PositionRole.builder().roleId(updateEvent.getId()).roleName(updateEvent.getRoleName()).build();
-        positionRoleInnerService.update(positionRole, new LambdaQueryWrapper<PositionRole>().eq(PositionRole::getRoleId, updateEvent.getId()));
         RolePermission rolePermission = RolePermission.builder().roleId(updateEvent.getId()).roleName(updateEvent.getRoleName()).build();
         rolePermissionInnerService.update(rolePermission, new LambdaQueryWrapper<RolePermission>().eq(RolePermission::getRoleId, updateEvent.getId()));
         UrlRole urlRole = UrlRole.builder().roleId(updateEvent.getId()).roleName(updateEvent.getRoleName()).build();

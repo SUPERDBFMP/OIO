@@ -1,17 +1,10 @@
 package indi.dbfmp.oio.oauth.core.service.transaction;
 
-import cn.hutool.core.collection.CollectionUtil;
-import indi.dbfmp.oio.oauth.core.entity.*;
 import indi.dbfmp.oio.oauth.core.innerService.IUserPermissionInnerService;
-import indi.dbfmp.oio.oauth.core.innerService.IUserPositionInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IUserRoleInnerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>
@@ -27,13 +20,11 @@ import java.util.List;
 public class GrantUserAuthServiceTransaction {
 
     @Autowired
-    private IUserPositionInnerService userPositionInnerService;
-    @Autowired
     private IUserRoleInnerService userRoleInnerService;
     @Autowired
     private IUserPermissionInnerService userPermissionInnerService;
 
-    @Transactional(rollbackFor = Exception.class)
+    /*@Transactional(rollbackFor = Exception.class)
     public void saveUserAuth(String userId, String groupId,String groupName,List<Position> positionList, List<Roles> rolesList, List<Permission> permissionList) {
         //组装
         if (CollectionUtil.isNotEmpty(positionList)) {
@@ -69,6 +60,6 @@ public class GrantUserAuthServiceTransaction {
                     .build()));
             userPermissionInnerService.saveBatch(userPermissionList);
         }
-    }
+    }*/
 
 }

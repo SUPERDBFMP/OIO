@@ -2,13 +2,9 @@ package indi.dbfmp.oio.oauth.core.service.transaction;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import indi.dbfmp.oio.oauth.core.entity.PositionGroup;
 import indi.dbfmp.oio.oauth.core.entity.UserPermission;
-import indi.dbfmp.oio.oauth.core.entity.UserPosition;
 import indi.dbfmp.oio.oauth.core.entity.UserRole;
-import indi.dbfmp.oio.oauth.core.innerService.IPositionGroupInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IUserPermissionInnerService;
-import indi.dbfmp.oio.oauth.core.innerService.IUserPositionInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IUserRoleInnerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

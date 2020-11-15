@@ -46,14 +46,14 @@ public class RolePermission extends BaseEntity {
     private String permissionName;
 
     /**
-     * 分组id
+     * 组织机构id
      */
-    private String groupId;
+    private String orgId;
 
     /**
-     * 分组名
+     * 组织机构名
      */
-    private String groupName;
+    private String orgName;
 
 
     public static final String ROLE_ID = "role_id";
@@ -64,8 +64,8 @@ public class RolePermission extends BaseEntity {
 
     public static final String PERMISSION_NAME = "permission_name";
 
-    public static final String GROUP_ID = "group_id";
+    public static final String ORG_ID = "org_id";
 
-    public static final String GROUP_NAME = "group_name";
+    public static final String ORG_NAME = "org_name";
 
 }
