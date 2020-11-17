@@ -40,9 +40,9 @@ public class RolePermissionServiceTransaction {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void removePermissionFromRole(String groupId,String roleId,List<String> permissionIdList) {
-        rolePermissionInnerService.remove(new LambdaQueryWrapper<RolePermission>().eq(RolePermission::getGroupId,groupId).eq(RolePermission::getRoleId,roleId).in(RolePermission::getPermissionId,permissionIdList));
-        userPermissionInnerService.remove(new LambdaQueryWrapper<UserPermission>().eq(UserPermission::getGroupId,groupId).eq(UserPermission::getPermissionId,permissionIdList));
+    public void removePermissionFromRole(String roleId,List<String> permissionIdList) {
+        rolePermissionInnerService.remove(new LambdaQueryWrapper<RolePermission>().eq(RolePermission::getRoleId,roleId).in(RolePermission::getPermissionId,permissionIdList));
+        userPermissionInnerService.remove(new LambdaQueryWrapper<UserPermission>().eq(UserPermission::getPermissionId,permissionIdList));
     }
 
 }

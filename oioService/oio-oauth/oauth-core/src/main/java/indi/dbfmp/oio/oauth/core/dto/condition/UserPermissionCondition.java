@@ -43,15 +43,15 @@ public class UserPermissionCondition extends BaseCondition{
     private String permissionName;
 
     /**
-     * 分组id
+     * 组织机构id
      */
-    @WrapperCondition(columnName = UserPermission.GROUP_ID)
-    private String groupId;
+    @WrapperCondition(columnName = UserPermission.ORG_ID)
+    private String orgId;
 
     /**
-     * 分组名
+     * 组织机构名
      */
-    @WrapperCondition(columnName = UserPermission.GROUP_NAME)
-    private String groupName;
+    @WrapperCondition(columnName = UserPermission.ORG_NAME)
+    private String orgName;
 
 }

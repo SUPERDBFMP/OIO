@@ -54,13 +54,13 @@ public class RolePermissionController {
     @PostMapping("/addNewPermissionToRole")
     @ValidateBefore
     public CommonResult<?> addNewPermissionToRole(RolePermissionDto rolePermissionDto) {
-        return CommonResult.success(rolePermissionService.addNewPermissionToRole(rolePermissionDto.getGroupId(),rolePermissionDto.getRoleId(),rolePermissionDto.getPermissionIdList()));
+        return CommonResult.success(rolePermissionService.addNewPermissionToRole(rolePermissionDto.getRoleId(),rolePermissionDto.getPermissionIdList()));
     }
 
     @PostMapping("/removePermissionFromRole")
     @ValidateBefore
     public CommonResult<?> removePermissionFromRole(RolePermissionDto rolePermissionDto) {
-        return CommonResult.success(rolePermissionService.removePermissionFromRole(rolePermissionDto.getGroupId(),rolePermissionDto.getRoleId(),rolePermissionDto.getPermissionIdList()));
+        return CommonResult.success(rolePermissionService.removePermissionFromRole(rolePermissionDto.getRoleId(),rolePermissionDto.getPermissionIdList()));
     }
 
 }

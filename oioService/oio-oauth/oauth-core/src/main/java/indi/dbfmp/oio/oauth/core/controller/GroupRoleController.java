@@ -9,6 +9,7 @@ import indi.dbfmp.oio.oauth.core.dto.condition.GroupCondition;
 import indi.dbfmp.oio.oauth.core.dto.condition.GroupRoleCondition;
 import indi.dbfmp.oio.oauth.core.dto.webDto.BatchDelDto;
 import indi.dbfmp.oio.oauth.core.dto.webDto.GroupRoleDto;
+import indi.dbfmp.oio.oauth.core.dto.webDto.IdListDto;
 import indi.dbfmp.oio.oauth.core.entity.GroupRole;
 import indi.dbfmp.oio.oauth.core.entity.Groups;
 import indi.dbfmp.oio.oauth.core.event.update.GroupsUpdateEvent;
@@ -65,7 +66,7 @@ public class GroupRoleController {
     @PostMapping("/removePositionFromGroup")
     @ValidateBefore
     public CommonResult<?> removePositionFromGroup(GroupRoleDto groupRoleDto) {
-        return CommonResult.success(groupRoleService.removePositionFromGroup(groupRoleDto.getGroupId(),groupRoleDto.getRoleIdList()));
+        return CommonResult.success(groupRoleService.removeRolesFromGroup(groupRoleDto.getGroupId(),groupRoleDto.getRoleIdList()));
     }
 
 }

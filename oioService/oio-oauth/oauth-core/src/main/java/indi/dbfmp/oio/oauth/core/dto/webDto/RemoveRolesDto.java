@@ -30,5 +30,5 @@ public class RemoveRolesDto implements Serializable {
     @NotBlank(message = "用户ID不能为空")
     String userId;
     @NotEmpty(message = "角色列表不能为空")
-    List<UserRoleGroupDto> userRoleGroupDtoList;
+    List<String> roleIdList;
 }

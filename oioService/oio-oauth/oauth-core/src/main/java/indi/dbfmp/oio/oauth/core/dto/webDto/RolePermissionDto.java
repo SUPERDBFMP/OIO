@@ -27,8 +27,6 @@ public class RolePermissionDto implements Serializable {
 
     private static final long serialVersionUID = -4515092546120640992L;
 
-    @NotBlank(message = "分组ID不能为空")
-    String groupId;
     @NotBlank(message = "角色ID不能为空")
     String roleId;
     @NotEmpty(message = "权限ID列表不能为空")

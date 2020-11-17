@@ -41,7 +41,7 @@ public class GroupRoleServiceTransaction {
      */
     @Transactional(rollbackFor = Exception.class)
     public void removeRolesFromGroup(String groupId, List<String> roleIdList, List<String> permissionIdList, String defaultGroupId, String defaultGroupName) {
-        userRoleInnerService.update(UserRole.builder()
+        /*userRoleInnerService.update(UserRole.builder()
                 .groupId(defaultGroupId)
                 .groupName(defaultGroupName)
                 .build(),new LambdaQueryWrapper<UserRole>().eq(UserRole::getGroupId,groupId).in(UserRole::getRoleId,roleIdList));
@@ -50,7 +50,7 @@ public class GroupRoleServiceTransaction {
                     .groupId(defaultGroupId)
                     .groupName(defaultGroupName)
                     .build(),new LambdaQueryWrapper<UserPermission>().eq(UserPermission::getGroupId,groupId).in(UserPermission::getPermissionId,permissionIdList));
-        }
+        }*/
     }
 
 }

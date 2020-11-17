@@ -69,7 +69,7 @@ public class UserRoleController {
     @RequestMapping("/removeRolesFromUser")
     @ValidateBefore
     public CommonResult<?> removeRolesFromUser(@RequestBody RemoveRolesDto removeRolesDto) {
-        return CommonResult.success(userRoleService.removeRolesFromUser(removeRolesDto.getUserId(),removeRolesDto.getUserRoleGroupDtoList()));
+        return CommonResult.success(userRoleService.removeRolesFromUser(removeRolesDto.getUserId(),removeRolesDto.getRoleIdList()));
     }
 
 }

@@ -71,14 +71,12 @@ public class UserRoleService {
         List<UserRole> userRoleList = new ArrayList<>(rolesList.size());
         rolesList.forEach(roles -> {
             Org queryOrg = orgInnerService.getById(roles.getOrgId());
-            //查询默认分组ID
-            Groups defaultGroup = groupsInnerService.getOne(new LambdaQueryWrapper<Groups>().eq(Groups::getOrgId,queryOrg.getId()).eq(Groups::getGroupCode,queryOrg.getOrgCode() + ":default"));
             userRoleList.add(UserRole.builder()
                     .roleName(roles.getRoleName())
                     .roleId(roles.getId())
                     .userId(userId)
-                    .groupId(defaultGroup.getId())
-                    .groupName(defaultGroup.getGroupName())
+                    .orgId(queryOrg.getId())
+                    .orgName(queryOrg.getOrgName())
                     .build());
         });
         //授予权限
@@ -86,16 +84,16 @@ public class UserRoleService {
         userRoleList.forEach(userRole -> {
             List<RolePermission> rolePermissionList = rolePermissionInnerService.lambdaQuery()
                     .eq(RolePermission::getRoleId, userRole.getRoleId())
-                    .eq(RolePermission::getGroupId, userRole.getGroupId())
                     .list();
             if (CollectionUtil.isNotEmpty(rolePermissionList)) {
                 rolePermissionList.forEach(rolePermission -> {
+                    Org queryOrg = orgInnerService.getById(rolePermission.getOrgId());
                     userPermissionList.add(UserPermission.builder()
                             .userId(userId)
                             .permissionId(rolePermission.getId())
                             .permissionName(rolePermission.getPermissionName())
-                            .groupId(userRole.getGroupId())
-                            .groupName(userRole.getGroupName())
+                            .orgId(queryOrg.getId())
+                            .orgName(queryOrg.getOrgName())
                             .build());
                 });
             }
@@ -116,27 +114,25 @@ public class UserRoleService {
     /**
      * 删除用户角色
      * @param userId 用户id
-     * @param userRoleGroupDtoList 用户
+     * @param roleIdList 角色id列表
      * @return 是否删除成功
      */
-    public boolean removeRolesFromUser(String userId,List<UserRoleGroupDto> userRoleGroupDtoList) {
+    public boolean removeRolesFromUser(String userId,List<String> roleIdList) {
         //检查用户
         Users queryUser = usersInnerService.getById(userId);
         if (null != queryUser && StatusEnums.UN_VALID.getCode() != queryUser.getLoginFlag()) {
             throw new CommonException("用户被封禁，无法授权");
         }
         //查询角色
-        List<Roles> rolesList = rolesInnerService.listByIds(userRoleGroupDtoList.stream().map(UserRoleGroupDto::getRoleId).collect(Collectors.toList()));
+        List<Roles> rolesList = rolesInnerService.listByIds(roleIdList);
         if (CollectionUtil.isEmpty(rolesList)) {
             return true;
         }
         //查询权限
-        List<RolePermission> rolePermissionList = rolePermissionInnerService.lambdaQuery().in(RolePermission::getRoleId, userRoleGroupDtoList.stream().map(UserRoleGroupDto::getRoleId).collect(Collectors.toList()))
-                .in(RolePermission::getGroupId, userRoleGroupDtoList.stream().map(UserRoleGroupDto::getGroupId).collect(Collectors.toList()))
-                .list();
+        List<RolePermission> rolePermissionList = rolePermissionInnerService.lambdaQuery().in(RolePermission::getRoleId, roleIdList).list();
 
         try {
-            userRoleServiceTransaction.removeRolesFromUser(userId, userRoleGroupDtoList, rolePermissionList);
+            userRoleServiceTransaction.removeRolesFromUser(userId, rolesList, rolePermissionList);
             //发送更新事件
             eventPublisher.publishEvent(UserRolePermissionUpdateEvent.builder()
                     .userId(userId)

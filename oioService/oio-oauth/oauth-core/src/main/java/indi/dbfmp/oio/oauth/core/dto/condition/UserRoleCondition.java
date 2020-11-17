@@ -43,15 +43,15 @@ public class UserRoleCondition extends BaseCondition{
     private String userId;
 
     /**
-     * 分组id
+     * 组织机构id
      */
-    @WrapperCondition(columnName = UserRole.GROUP_ID)
-    private String groupId;
+    @WrapperCondition(columnName = UserRole.ORG_ID)
+    private String orgId;
 
     /**
-     * 分组名
+     * 组织机构名
      */
-    @WrapperCondition(columnName = UserRole.GROUP_NAME)
-    private String groupName;
+    @WrapperCondition(columnName = UserRole.ORG_NAME)
+    private String orgName;
 
 }

@@ -45,17 +45,15 @@ public class UserRoleServiceTransaction {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void removeRolesFromUser(String userId,List<UserRoleGroupDto> userRoleGroupDtoList, List<RolePermission> rolePermissionList) {
-        if (CollectionUtil.isNotEmpty(userRoleGroupDtoList)) {
+    public void removeRolesFromUser(String userId,List<Roles> rolesList, List<RolePermission> rolePermissionList) {
+        if (CollectionUtil.isNotEmpty(rolesList)) {
             userRoleInnerService.remove(userRoleInnerService.lambdaQuery()
                     .eq(UserRole::getUserId,userId)
-                    .in(UserRole::getGroupId,userRoleGroupDtoList.stream().map(UserRoleGroupDto::getGroupId).collect(Collectors.toList()))
-                    .in(UserRole::getRoleId,userRoleGroupDtoList.stream().map(UserRoleGroupDto::getRoleId).collect(Collectors.toList())));
+                    .in(UserRole::getRoleId,rolesList.stream().map(Roles::getId).collect(Collectors.toList())));
         }
         if (CollectionUtil.isNotEmpty(rolePermissionList)) {
             userPermissionInnerService.remove(userPermissionInnerService.lambdaQuery()
                     .eq(UserPermission::getUserId,userId)
-                    .in(UserPermission::getGroupId,rolePermissionList.stream().map(RolePermission::getGroupId).collect(Collectors.toList()))
                     .in(UserPermission::getPermissionId,rolePermissionList.stream().map(RolePermission::getPermissionId).collect(Collectors.toList())));
         }
     }

@@ -95,7 +95,7 @@ public class GroupRoleService {
      * @param roleIdList 角色id列表
      * @return 是否移除成功
      */
-    public boolean removePositionFromGroup(String groupId, List<String> roleIdList) {
+    public boolean removeRolesFromGroup(String groupId, List<String> roleIdList) {
         log.info("removePositionFromGroup,groupId:{};roleIdList:{}",groupId,roleIdList);
         //检查groupId 合法性
         Groups queryGroup = groupsInnerService.getById(groupId);
@@ -110,24 +110,25 @@ public class GroupRoleService {
             return false;
         }
         //检查当前分组下是否存在此roleIdList
-        if (groupRoleInnerService.count(new LambdaQueryWrapper<GroupRole>().eq(GroupRole::getGroupId,groupId).in(GroupRole::getRoleId,roleIdList)) != roleIdList.size()) {
+        if (groupRoleInnerService.count(groupRoleInnerService.lambdaQuery().eq(GroupRole::getGroupId,groupId).in(GroupRole::getRoleId,roleIdList)) != roleIdList.size()) {
             log.warn("存在不是当前分组下的角色");
             return false;
         }
         //查询角色下的权限
-        List<RolePermission> rolePermissionList = rolePermissionInnerService.list(new LambdaQueryWrapper<RolePermission>()
-                .eq(RolePermission::getGroupId,groupId)
+        List<RolePermission> rolePermissionList = rolePermissionInnerService.list(rolePermissionInnerService.lambdaQuery()
                 .in(RolePermission::getRoleId,roleIdList));
         List<String> permissionIdList = null;
         if (CollectionUtil.isNotEmpty(rolePermissionList)) {
             permissionIdList = rolePermissionList.stream().map(RolePermission::getPermissionId).collect(Collectors.toList());
         }
         //查询默认分组ID
-        Groups defaultGroup = groupsInnerService.getOne(new LambdaQueryWrapper<Groups>().eq(Groups::getOrgId,queryOrg.getId()).eq(Groups::getGroupCode,queryOrg.getOrgCode() + ":default"));
+        Groups defaultGroup = groupsInnerService.getOne(groupsInnerService.lambdaQuery().eq(Groups::getOrgId,queryOrg.getId()).eq(Groups::getGroupCode,queryOrg.getOrgCode() + ":default"));
         if (null == defaultGroup) {
             log.error("未找到默认分组，请配置！org:{}",queryOrg);
             return false;
         }
+
+        //todo 用户组查询出用户
         try {
             groupRoleServiceTransaction.removeRolesFromGroup(groupId, roleIdList, permissionIdList, defaultGroup.getId(), defaultGroup.getGroupName());
             return true;

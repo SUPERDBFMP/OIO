@@ -25,10 +25,10 @@ import lombok.experimental.SuperBuilder;
 public class UrlRoleCondition extends BaseCondition{
 
     /**
-     * 分组id
+     * 组织机构id
      */
-    @WrapperCondition(columnName = UrlRole.GROUP_ID)
-    private String groupId;
+    @WrapperCondition(columnName = UrlRole.ORG_ID)
+    private String orgId;
 
     /**
      * 角色id
@@ -37,10 +37,10 @@ public class UrlRoleCondition extends BaseCondition{
     private String roleId;
 
     /**
-     * 分组名
+     * 组织机构名
      */
-    @WrapperCondition(columnName = UrlRole.GROUP_NAME)
-    private String groupName;
+    @WrapperCondition(columnName = UrlRole.ORG_NAME)
+    private String orgName;
 
     /**
      * 角色名

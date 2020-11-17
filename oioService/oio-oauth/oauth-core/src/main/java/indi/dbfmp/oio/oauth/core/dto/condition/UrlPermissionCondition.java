@@ -25,10 +25,10 @@ import lombok.experimental.SuperBuilder;
 public class UrlPermissionCondition extends BaseCondition{
 
     /**
-     * 分组id
+     * 组织机构id
      */
-    @WrapperCondition(columnName = UrlPermission.GROUP_ID)
-    private String groupId;
+    @WrapperCondition(columnName = UrlPermission.ORG_ID)
+    private String orgId;
 
     /**
      * 角色id
@@ -49,9 +49,9 @@ public class UrlPermissionCondition extends BaseCondition{
     private String url;
 
     /**
-     * 分组名
+     * 组织机构名
      */
-    @WrapperCondition(columnName = UrlPermission.GROUP_NAME)
-    private String groupName;
+    @WrapperCondition(columnName = UrlPermission.ORG_NAME)
+    private String orgName;
 
 }

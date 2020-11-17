@@ -49,15 +49,15 @@ public class RolePermissionCondition extends BaseCondition{
     private String permissionName;
 
     /**
-     * 分组id
+     * 组织机构id
      */
-    @WrapperCondition(columnName = RolePermission.GROUP_ID)
-    private String groupId;
+    @WrapperCondition(columnName = RolePermission.ORG_ID)
+    private String orgId;
 
     /**
-     * 分组名
+     * 组织机构名
      */
-    @WrapperCondition(columnName = RolePermission.GROUP_NAME)
-    private String groupName;
+    @WrapperCondition(columnName = RolePermission.ORG_NAME)
+    private String orgName;
 
 }

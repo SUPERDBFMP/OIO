@@ -29,10 +29,6 @@ public class GroupsUpdateEventListener implements RecoveryEvent<GroupsUpdateEven
     @Autowired
     private IGroupRoleInnerService groupRoleInnerService;
     @Autowired
-    private IRolePermissionInnerService rolePermissionInnerService;
-    @Autowired
-    private IUrlPermissionInnerService urlPermissionInnerService;
-    @Autowired
     private RedissonClient redissonClient;
     @Autowired
     private IEventInnerService eventInnerService;
@@ -68,6 +64,7 @@ public class GroupsUpdateEventListener implements RecoveryEvent<GroupsUpdateEven
         }
     }
 
+    @Override
     public void eventAction(GroupsUpdateEvent groupsUpdateEvent) {
         log.info("收到group更新事件,groupsUpdateEvent:{}", groupsUpdateEvent);
         if (StrUtil.isBlank(groupsUpdateEvent.getId())) {
@@ -77,15 +74,8 @@ public class GroupsUpdateEventListener implements RecoveryEvent<GroupsUpdateEven
         Event event = new Event();
         event.setEventStatus(EventStatus.PROCESSING.name());
         eventInnerService.updateById(event);
-        GroupRole groupRole = GroupRole.builder()
-                .groupId(groupsUpdateEvent.getId())
-                .groupName(groupsUpdateEvent.getGroupName())
-                .build();
+        GroupRole groupRole = GroupRole.builder().groupId(groupsUpdateEvent.getId()).groupName(groupsUpdateEvent.getGroupName()).build();
         groupRoleInnerService.update(groupRole, new LambdaQueryWrapper<GroupRole>().eq(GroupRole::getGroupId, groupsUpdateEvent.getId()));
-        RolePermission rolePermission = RolePermission.builder().groupId(groupsUpdateEvent.getId()).groupName(groupsUpdateEvent.getGroupName()).build();
-        rolePermissionInnerService.update(rolePermission, new LambdaQueryWrapper<RolePermission>().eq(RolePermission::getGroupId, groupsUpdateEvent.getId()));
-        UrlPermission urlPermission = UrlPermission.builder().groupId(groupsUpdateEvent.getId()).groupName(groupsUpdateEvent.getGroupName()).build();
-        urlPermissionInnerService.update(urlPermission, new LambdaQueryWrapper<UrlPermission>().eq(UrlPermission::getGroupId, groupsUpdateEvent.getId()));
         event.setEventStatus(EventStatus.SUCCESS.name());
         event.setRemarks("更新成功！");
         eventInnerService.updateById(event);
