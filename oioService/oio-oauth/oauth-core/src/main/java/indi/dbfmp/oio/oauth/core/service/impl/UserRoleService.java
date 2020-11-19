@@ -1,9 +1,13 @@
 package indi.dbfmp.oio.oauth.core.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import indi.dbfmp.oio.oauth.core.dto.UserRoleGroupDto;
 import indi.dbfmp.oio.oauth.core.entity.*;
+import indi.dbfmp.oio.oauth.core.enums.EventStatus;
+import indi.dbfmp.oio.oauth.core.enums.EventTypes;
+import indi.dbfmp.oio.oauth.core.event.update.GroupsUpdateEventListener;
 import indi.dbfmp.oio.oauth.core.event.update.UserRolePermissionUpdateEvent;
 import indi.dbfmp.oio.oauth.core.exception.CommonException;
 import indi.dbfmp.oio.oauth.core.innerService.*;
@@ -46,6 +50,8 @@ public class UserRoleService {
     private UserRoleServiceTransaction userRoleServiceTransaction;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+    @Autowired
+    private IEventInnerService eventInnerService;
 
     /**
      * 授权新角色给用户
@@ -100,10 +106,19 @@ public class UserRoleService {
         });
         try {
             userRoleServiceTransaction.grantNewRolesToUser(userRoleList, userPermissionList);
-            //发送更新事件
-            eventPublisher.publishEvent(UserRolePermissionUpdateEvent.builder()
+            UserRolePermissionUpdateEvent updateEvent = UserRolePermissionUpdateEvent.builder()
                     .userId(userId)
-                    .build());
+                    .build();
+            Event event = Event.builder()
+                    .eventBeanName(GroupsUpdateEventListener.class.getSimpleName())
+                    .eventParams(JSONObject.toJSONString(updateEvent))
+                    .eventStatus(EventStatus.PROCESSING.name())
+                    .eventType(EventTypes.UserRolePermissionUpdate.name())
+                    .build();
+            eventInnerService.save(event);
+            updateEvent.setEventId(event.getId());
+            //发送更新事件
+            eventPublisher.publishEvent(updateEvent);
             return true;
         } catch (Exception e) {
             log.error("事务授权用户角色失败！",e);
@@ -133,10 +148,19 @@ public class UserRoleService {
 
         try {
             userRoleServiceTransaction.removeRolesFromUser(userId, rolesList, rolePermissionList);
-            //发送更新事件
-            eventPublisher.publishEvent(UserRolePermissionUpdateEvent.builder()
+            UserRolePermissionUpdateEvent updateEvent = UserRolePermissionUpdateEvent.builder()
                     .userId(userId)
-                    .build());
+                    .build();
+            Event event = Event.builder()
+                    .eventBeanName(GroupsUpdateEventListener.class.getSimpleName())
+                    .eventParams(JSONObject.toJSONString(updateEvent))
+                    .eventStatus(EventStatus.PROCESSING.name())
+                    .eventType(EventTypes.UserRolePermissionUpdate.name())
+                    .build();
+            eventInnerService.save(event);
+            updateEvent.setEventId(event.getId());
+            //发送更新事件
+            eventPublisher.publishEvent(updateEvent);
             return true;
         } catch (Exception e) {
             log.error("事务删除用户角色失败！",e);

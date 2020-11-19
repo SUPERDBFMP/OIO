@@ -16,6 +16,7 @@ public enum EventTypes {
     PermissionUpdate,
     PositionUpdate,
     RolesUpdate,
+    UserRolePermissionUpdate,
     ;
 
 }
