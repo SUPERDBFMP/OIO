@@ -15,6 +15,7 @@ import indi.dbfmp.oio.oauth.core.event.update.GroupsUpdateEvent;
 import indi.dbfmp.oio.oauth.core.event.update.GroupsUpdateEventListener;
 import indi.dbfmp.oio.oauth.core.innerService.IEventInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IGroupsInnerService;
+import indi.dbfmp.oio.oauth.core.service.impl.EventService;
 import indi.dbfmp.oio.oauth.core.uitls.QueryWrapperUtil;
 import indi.dbfmp.validator.core.annotation.ValidateBefore;
 import indi.dbfmp.validator.core.group.UpdateGroup;
@@ -43,7 +44,7 @@ public class GroupsController {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
     @Autowired
-    private IEventInnerService eventInnerService;
+    private EventService eventService;
 
     //增
     @RequestMapping("/add")
@@ -76,13 +77,7 @@ public class GroupsController {
                 .groupCode(groups.getGroupCode())
                 .groupName(groups.getGroupName())
                 .build();
-        Event event = Event.builder()
-                .eventBeanName(GroupsUpdateEventListener.class.getSimpleName())
-                .eventParams(JSONObject.toJSONString(groupsUpdateEvent))
-                .eventStatus(EventStatus.PROCESSING.name())
-                .eventType(EventTypes.GroupsUpdate.name())
-                .build();
-        eventInnerService.save(event);
+        Event event = eventService.createProcessingEvent(GroupsUpdateEventListener.class.getSimpleName(),JSONObject.toJSONString(groupsUpdateEvent),EventTypes.GroupsUpdate);
         groupsUpdateEvent.setEventId(event.getId());
         eventPublisher.publishEvent(groupsUpdateEvent);
         return CommonResult.success(updateResult);

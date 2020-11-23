@@ -20,6 +20,7 @@ import indi.dbfmp.oio.oauth.core.event.update.RolesUpdateEvent;
 import indi.dbfmp.oio.oauth.core.event.update.RolesUpdateEventListener;
 import indi.dbfmp.oio.oauth.core.innerService.IEventInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IRolesInnerService;
+import indi.dbfmp.oio.oauth.core.service.impl.EventService;
 import indi.dbfmp.oio.oauth.core.uitls.QueryWrapperUtil;
 import indi.dbfmp.validator.core.annotation.ValidateBefore;
 import indi.dbfmp.validator.core.group.UpdateGroup;
@@ -49,7 +50,7 @@ public class RolesController {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
     @Autowired
-    private IEventInnerService eventInnerService;
+    private EventService eventService;
 
     //增
     @RequestMapping("/add")
@@ -83,13 +84,7 @@ public class RolesController {
                 .orgId(roles.getOrgId())
                 .orgName(roles.getOrgName())
                 .build();
-        Event event = Event.builder()
-                .eventBeanName(RolesUpdateEventListener.class.getSimpleName())
-                .eventParams(JSONObject.toJSONString(rolesUpdateEvent))
-                .eventStatus(EventStatus.PROCESSING.name())
-                .eventType(EventTypes.RolesUpdate.name())
-                .build();
-        eventInnerService.save(event);
+        Event event = eventService.createProcessingEvent(RolesUpdateEventListener.class.getSimpleName(),JSONObject.toJSONString(rolesUpdateEvent),EventTypes.RolesUpdate);
         rolesUpdateEvent.setEventId(event.getId());
         eventPublisher.publishEvent(rolesUpdateEvent);
         return CommonResult.success(updateResult);

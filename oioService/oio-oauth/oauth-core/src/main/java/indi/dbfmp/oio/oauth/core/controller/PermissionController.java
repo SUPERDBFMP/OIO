@@ -16,6 +16,7 @@ import indi.dbfmp.oio.oauth.core.event.update.PermissionUpdateEvent;
 import indi.dbfmp.oio.oauth.core.event.update.PermissionUpdateEventListener;
 import indi.dbfmp.oio.oauth.core.innerService.IEventInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IPermissionInnerService;
+import indi.dbfmp.oio.oauth.core.service.impl.EventService;
 import indi.dbfmp.oio.oauth.core.uitls.QueryWrapperUtil;
 import indi.dbfmp.validator.core.annotation.ValidateBefore;
 import indi.dbfmp.validator.core.group.UpdateGroup;
@@ -44,7 +45,7 @@ public class PermissionController {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
     @Autowired
-    private IEventInnerService eventInnerService;
+    private EventService eventService;
 
     //增
     @RequestMapping("/add")
@@ -79,13 +80,7 @@ public class PermissionController {
                 .orgId(permission.getOrgId())
                 .orgName(permission.getOrgName())
                 .build();
-        Event event = Event.builder()
-                .eventBeanName(PermissionUpdateEventListener.class.getSimpleName())
-                .eventParams(JSONObject.toJSONString(permissionUpdateEvent))
-                .eventStatus(EventStatus.PROCESSING.name())
-                .eventType(EventTypes.PermissionUpdate.name())
-                .build();
-        eventInnerService.save(event);
+        Event event = eventService.createProcessingEvent(PermissionUpdateEventListener.class.getSimpleName(),JSONObject.toJSONString(permissionUpdateEvent),EventTypes.PermissionUpdate);
         permissionUpdateEvent.setEventId(event.getId());
         eventPublisher.publishEvent(permissionUpdateEvent);
         return CommonResult.success(updateResult);

@@ -51,7 +51,7 @@ public class UserRoleService {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
     @Autowired
-    private IEventInnerService eventInnerService;
+    private EventService eventService;
 
     /**
      * 授权新角色给用户
@@ -109,13 +109,7 @@ public class UserRoleService {
             UserRolePermissionUpdateEvent updateEvent = UserRolePermissionUpdateEvent.builder()
                     .userId(userId)
                     .build();
-            Event event = Event.builder()
-                    .eventBeanName(GroupsUpdateEventListener.class.getSimpleName())
-                    .eventParams(JSONObject.toJSONString(updateEvent))
-                    .eventStatus(EventStatus.PROCESSING.name())
-                    .eventType(EventTypes.UserRolePermissionUpdate.name())
-                    .build();
-            eventInnerService.save(event);
+            Event event = eventService.createProcessingEvent(GroupsUpdateEventListener.class.getSimpleName(),JSONObject.toJSONString(updateEvent),EventTypes.UserRolePermissionUpdate);
             updateEvent.setEventId(event.getId());
             //发送更新事件
             eventPublisher.publishEvent(updateEvent);
@@ -151,13 +145,7 @@ public class UserRoleService {
             UserRolePermissionUpdateEvent updateEvent = UserRolePermissionUpdateEvent.builder()
                     .userId(userId)
                     .build();
-            Event event = Event.builder()
-                    .eventBeanName(GroupsUpdateEventListener.class.getSimpleName())
-                    .eventParams(JSONObject.toJSONString(updateEvent))
-                    .eventStatus(EventStatus.PROCESSING.name())
-                    .eventType(EventTypes.UserRolePermissionUpdate.name())
-                    .build();
-            eventInnerService.save(event);
+            Event event = eventService.createProcessingEvent(GroupsUpdateEventListener.class.getSimpleName(),JSONObject.toJSONString(updateEvent),EventTypes.UserRolePermissionUpdate);
             updateEvent.setEventId(event.getId());
             //发送更新事件
             eventPublisher.publishEvent(updateEvent);

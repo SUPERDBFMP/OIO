@@ -15,6 +15,7 @@ import indi.dbfmp.oio.oauth.core.event.update.OrgUpdateEvent;
 import indi.dbfmp.oio.oauth.core.event.update.OrgUpdateEventListener;
 import indi.dbfmp.oio.oauth.core.innerService.IEventInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IOrgInnerService;
+import indi.dbfmp.oio.oauth.core.service.impl.EventService;
 import indi.dbfmp.oio.oauth.core.uitls.QueryWrapperUtil;
 import indi.dbfmp.validator.core.annotation.ValidateBefore;
 import indi.dbfmp.validator.core.group.UpdateGroup;
@@ -45,7 +46,7 @@ public class OrgController {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
     @Autowired
-    private IEventInnerService eventInnerService;
+    private EventService eventService;
 
     //增
     @RequestMapping("/add")
@@ -79,13 +80,7 @@ public class OrgController {
                 .orgName(saveOrg.getOrgName())
                 .orgType(saveOrg.getOrgType())
                 .build();
-        Event event = Event.builder()
-                .eventBeanName(OrgUpdateEventListener.class.getSimpleName())
-                .eventParams(JSONObject.toJSONString(orgUpdateEvent))
-                .eventStatus(EventStatus.PROCESSING.name())
-                .eventType(EventTypes.OrgUpdate.name())
-                .build();
-        eventInnerService.save(event);
+        Event event = eventService.createProcessingEvent(OrgUpdateEventListener.class.getSimpleName(),JSONObject.toJSONString(orgUpdateEvent),EventTypes.OrgUpdate);
         orgUpdateEvent.setEventId(event.getId());
         eventPublisher.publishEvent(orgUpdateEvent);
         return CommonResult.success(updateResult);
