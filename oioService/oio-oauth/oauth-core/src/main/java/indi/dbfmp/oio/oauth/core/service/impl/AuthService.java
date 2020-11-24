@@ -59,8 +59,8 @@ public class AuthService {
     @Autowired
     private RedissonClient redissonClient;
 
-    private final static int roleCheckExpTime = 60 * 60;
-    private final static int permissionCheckExpTime = 60 * 60;
+    private final static int roleCheckExpTime = 10 * 60;
+    private final static int permissionCheckExpTime = 10 * 60;
 
     /**
      * url缓存
