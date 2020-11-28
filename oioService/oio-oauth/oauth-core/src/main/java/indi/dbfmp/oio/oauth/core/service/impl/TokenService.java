@@ -269,6 +269,7 @@ public class TokenService {
                     .jti(IdUtil.objectId())
                     .userId(payloadDto.getUserId())
                     .userName(payloadDto.getUserName())
+                    .orgId(payloadDto.getOrgId())
                     .build();
             PayloadDto refreshTokenPayLoad = PayloadDto.builder()
                     .appType(payloadDto.getAppType())
@@ -276,6 +277,7 @@ public class TokenService {
                     .jti(IdUtil.objectId())
                     .userId(payloadDto.getUserId())
                     .userName(payloadDto.getUserName())
+                    .orgId(payloadDto.getOrgId())
                     .build();
             tokenPayLoad.setOtherTokenId(refreshTokenPayLoad.getJti());
             refreshTokenPayLoad.setOtherTokenId(tokenPayLoad.getJti());
