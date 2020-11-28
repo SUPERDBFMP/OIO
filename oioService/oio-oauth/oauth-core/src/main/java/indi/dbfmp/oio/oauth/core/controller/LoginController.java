@@ -4,8 +4,10 @@ import cn.hutool.core.util.StrUtil;
 import indi.dbfmp.oio.oauth.core.dto.webDto.AuthCodeTokenDto;
 import indi.dbfmp.oio.oauth.core.dto.webDto.RefreshDto;
 import indi.dbfmp.oio.oauth.core.dto.webDto.TokenDto;
+import indi.dbfmp.oio.oauth.core.innerService.IUsersInnerService;
 import indi.dbfmp.oio.oauth.core.service.impl.TokenService;
 import indi.dbfmp.oio.oauth.core.dto.webDto.LoginDto;
+import indi.dbfmp.validator.core.annotation.ValidateBefore;
 import indi.dbfmp.web.common.dto.CommonResult;
 import inid.dbfmp.oauth.api.dto.VerifyTokenDto;
 import lombok.extern.slf4j.Slf4j;
@@ -49,51 +51,37 @@ public class LoginController {
     }
 
     @PostMapping("/loginByPwd")
-    @Validated
+    @ValidateBefore
     @ResponseBody
     public CommonResult<?> loginByPwd(@RequestBody LoginDto loginDto) {
+        log.info("登录信息:{}",loginDto);
         String code = tokenService.getOauthCode(loginDto.getUserName(),loginDto.getPwd(),loginDto.getAppType(),loginDto.getClientId());
         String redirectUrl = loginDto.getRedirectUrl() + "?code=" + code;
         return CommonResult.success(redirectUrl);
     }
 
     @PostMapping("/getToken")
-    @Validated
+    @ValidateBefore
     @ResponseBody
     public CommonResult<?> getToken(@RequestBody AuthCodeTokenDto authCodeTokenDto) {
-        try {
-            TokenDto tokenDto = tokenService.getToken(authCodeTokenDto);
-            return CommonResult.success(tokenDto);
-        } catch (Exception e) {
-            log.error("操作失败",e);
-            return CommonResult.failed();
-        }
+        TokenDto tokenDto = tokenService.getToken(authCodeTokenDto);
+        return CommonResult.success(tokenDto);
     }
 
     @PostMapping("/verifyToken")
-    @Validated
+    @ValidateBefore
     @ResponseBody
     public CommonResult<?> verifyToken(@RequestBody TokenDto tokenDto) {
-        try {
-            VerifyTokenDto verifyTokenDto = tokenService.verifyToken(tokenDto.getToken());
-            return CommonResult.success(verifyTokenDto);
-        } catch (Exception e) {
-            log.error("操作失败",e);
-            return CommonResult.failed();
-        }
+        VerifyTokenDto verifyTokenDto = tokenService.verifyToken(tokenDto.getToken());
+        return CommonResult.success(verifyTokenDto);
     }
 
     @PostMapping("/refreshToken")
-    @Validated
+    @ValidateBefore
     @ResponseBody
     public CommonResult<?> refreshToken(@RequestBody RefreshDto refreshDto) {
-        try {
-            TokenDto tokenDto = tokenService.refreshToken(refreshDto);
-            return CommonResult.success(tokenDto);
-        } catch (Exception e) {
-            log.error("操作失败",e);
-            return CommonResult.failed();
-        }
+        TokenDto tokenDto = tokenService.refreshToken(refreshDto);
+        return CommonResult.success(tokenDto);
     }
 
 }

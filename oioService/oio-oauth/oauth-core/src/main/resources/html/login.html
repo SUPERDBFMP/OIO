@@ -10,10 +10,14 @@
     <link crossorigin="anonymous" integrity="sha512-sTYjG5YMw07KkFo+CDtQ/B2405Uu5Sik4uJNJKhKRjJbVLhoHGmo94u34ECH2r7wwYtmV4iadyq/uhGI3JqmGg==" href="https://lib.baomitu.com/ant-design-vue/1.7.2/antd.css" rel="stylesheet">
     <link crossorigin="anonymous" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" href="https://lib.baomitu.com/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link crossorigin="anonymous" integrity="sha512-gFn7XRm5v3GlgOwAQ80SXDT8pyg6uaV9JbW2OkNx5Im2jR8zx2X/3DbHymcZnUraU+klZjRJqNfNkFN7SyR3fg==" href="https://lib.baomitu.com/animate.css/4.1.1/animate.compat.css" rel="stylesheet">
+    <script crossorigin="anonymous" integrity="sha512-DZqqY3PiOvTP9HkjIWgjO6ouCbq+dxqWoJZ/Q+zPYNHmlnI2dQnbJ5bxAHpAMw+LXRm4D72EIRXzvcHQtE8/VQ==" src="https://lib.baomitu.com/axios/0.21.0/axios.min.js"></script>
 
 </head>
 <body>
     <div id="app">
+        {{clientId}}
+        {{redirectUrl}}
+        {{appType}}
         <div class="container-wrapper">
             <a-spin :spinning="loading">
                 <div class="halo-logo animated fadeInUp">
@@ -22,7 +26,7 @@
                 <div class="animated">
                     <a-form
                             layout="vertical"
-                            @keyup.enter.native="handleLogin">
+                            @keyup.enter.native="login">
                         <a-form-item
                                 class="animated fadeInUp"
                                 :style="{'animation-delay': '0.1s'}">
@@ -51,12 +55,43 @@
                             </a-input>
                         </a-form-item>
                         <a-form-item
+                                v-if="showRestPwdByDefaultPwd"
+                                class="animated fadeInUp"
+                                :style="{'animation-delay': '0.2s'}">
+                            <a-input
+                                    v-model="newPwdOne"
+                                    type="password"
+                                    placeholder="新密码">
+                                <a-icon
+                                        slot="prefix"
+                                        type="lock"
+                                        style="color: rgba(0,0,0,.25)">
+                                </a-icon>
+                            </a-input>
+                        </a-form-item>
+                        <a-form-item
+                                v-if="showRestPwdByDefaultPwd"
+                                class="animated fadeInUp"
+                                :style="{'animation-delay': '0.2s'}">
+                            <a-input
+                                    v-model="newPwdTwo"
+                                    type="password"
+                                    placeholder="确认新密码">
+                                <a-icon
+                                        slot="prefix"
+                                        type="lock"
+                                        style="color: rgba(0,0,0,.25)">
+                                </a-icon>
+                            </a-input>
+                        </a-form-item>
+                        <a-form-item
                                 class="animated fadeInUp"
                                 :style="{'animation-delay': '0.3s'}">
                             <a-button
                                     type="primary"
                                     :block="true"
-                                    @click="handleLogin">
+                                    :loading="loginLoading"
+                                    @click="login">
                                 登录
                             </a-button>
                         </a-form-item>
@@ -71,7 +106,77 @@
         el: '#app',
         data: {
             message: 'Hello Vue!',
-            loading:false
+            loading:false,
+            clientId:'${clientId}',
+            redirectUrl:'${redirectUrl}',
+            appType:'${appType}',
+            username:'',
+            password:null,
+            showRestPwdByDefaultPwd:false,
+            newPwdOne:'',
+            newPwdTwo:'',
+            loginLoading: false
+        },
+        methods:{
+            login(){
+                this.loginLoading = true;
+                var that = this;
+                if (!this.showRestPwdByDefaultPwd) {
+                    axios.post('/login/loginByPwd', {
+                        userName: this.username,
+                        pwd: this.password,
+                        clientId: this.clientId,
+                        redirectUrl: this.redirectUrl,
+                        appType: this.appType
+                    }).then(function (response) {
+                        console.log(response.data);
+                        if (response.data.code && response.data.code === 406) {
+                            that.$message.success('您正在使用默认密码，请先修改！',10);
+                            that.showRestPwdByDefaultPwd = true;
+                            that.loginLoading = false;
+                            return;
+                        }
+                        if (response.data.code && response.data.code === 200) {
+                            that.$message.success('认证成功，即将跳转！');
+                            window.location.href = response.data.data;
+                            that.loginLoading = false;
+                            return;
+                        }
+                        that.$message.error(response.data.message);
+                        that.loginLoading = false;
+                        //todo 密码加密
+                    }).catch(function (error) {
+                        that.loginLoading = false;
+                            console.log(error);
+                            that.$message.error(error.data.message);
+                        });
+                } else {
+                    if (this.newPwdOne !== this.newPwdTwo) {
+                        this.$message.error('两次新密码不一致！',10);
+                        that.loginLoading = false;
+                        return;
+                    }
+                    axios.post('/users/setNewPwdByDefaultPwd', {
+                        userName: this.username,
+                        oldPwd: this.password,
+                        newPwd: this.newPwdOne
+                    }).then(function (response) {
+                        console.log(response.data);
+                        if (response.data.code && response.data.code === 200) {
+                            that.showRestPwdByDefaultPwd = false;
+                            that.$message.success('修改密码成功，即将登录！');
+                            that.password = that.newPwdOne;
+                            that.login();
+                        }
+                        that.loginLoading = false;
+                    }).catch(function (error) {
+                        console.log(error);
+                        let msg = error.data ? error.data.message ? error.data.message : error.data.message : '系统异常';
+                        that.$message.error(msg,5);
+                        that.loginLoading = false;
+                    });
+                }
+            }
         }
     })
 </script>

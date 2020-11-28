@@ -18,7 +18,7 @@ public enum  StatusEnums implements IntEnums {
     UN_VALID(0,"无效"),
     ;
 
-    private final int code;
+    private final Integer code;
     private final String desc;
 
 

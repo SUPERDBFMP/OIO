@@ -10,6 +10,7 @@ import indi.dbfmp.oio.oauth.core.dto.redisDto.OauthCodeDto;
 import indi.dbfmp.oio.oauth.core.entity.Client;
 import indi.dbfmp.oio.oauth.core.entity.Users;
 import indi.dbfmp.oio.oauth.core.exception.CommonException;
+import indi.dbfmp.oio.oauth.core.exception.ResetPasswordException;
 import indi.dbfmp.oio.oauth.core.innerService.IClientInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IUsersInnerService;
 import inid.dbfmp.oauth.api.dto.PayloadDto;
@@ -76,13 +77,16 @@ public class TokenService {
         }
         //查询用户
         Users queryUser = usersInnerService.getOne(new LambdaQueryWrapper<Users>().eq(Users::getPhone, username)
-                .select(Users::getPassword, Users::getLoginFlag, Users::getNickName, Users::getUserId));
+                .select(Users::getPassword, Users::getLoginFlag, Users::getNickName, Users::getUserId,Users::getDefaultPwd));
         //todo 使用加密的密码
         if (null == queryUser || !queryUser.getPassword().equals(pwd)) {
             throw new CommonException("用户名或密码错误！");
         }
-        if (!String.valueOf(StatusEnums.VALID.getCode()).equals(queryUser.getLoginFlag())) {
+        if (!queryUser.getLoginFlag().equals(StatusEnums.VALID.getCode())) {
             throw new CommonException("您的账号被封禁了，请联系联系客服解封！");
+        }
+        if (queryUser.getDefaultPwd().equals(StatusEnums.VALID.getCode())) {
+            throw new ResetPasswordException();
         }
         //颁发OauthCode
         OauthCodeDto oauthCodeDto = OauthCodeDto.builder()

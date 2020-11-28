@@ -3,6 +3,7 @@ package indi.dbfmp.oio.oauth.core.dto.webDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 
@@ -15,6 +16,7 @@ import javax.validation.constraints.NotBlank;
  * @name: loginDto
  * @since 2020/10/11 7:00 下午
  */
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

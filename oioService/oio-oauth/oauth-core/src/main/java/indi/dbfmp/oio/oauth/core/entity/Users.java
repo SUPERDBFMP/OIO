@@ -2,25 +2,34 @@ package indi.dbfmp.oio.oauth.core.entity;
 
 import indi.dbfmp.oio.oauth.core.entity.BaseEntity;
 import java.time.LocalDateTime;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
 /**
  * <p>
- * 
+ * 用户信息表
  * </p>
  *
  * @author dbfmp
- * @since 2020-10-12
+ * @since 2020-11-28
  */
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Accessors(chain = true)
 public class Users extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户ID
+     * 用户id
      */
     private String userId;
 
@@ -64,5 +73,30 @@ public class Users extends BaseEntity {
      */
     private Integer loginFlag;
 
+    /**
+     * 是否默认密码：1是，0否
+     */
+    private Integer defaultPwd;
+
+
+    public static final String USER_ID = "user_id";
+
+    public static final String PASSWORD = "password";
+
+    public static final String NICK_NAME = "nick_name";
+
+    public static final String PHONE = "phone";
+
+    public static final String EMAIL = "email";
+
+    public static final String STATUS = "status";
+
+    public static final String LOGIN_IP = "login_ip";
+
+    public static final String LOGIN_DATE = "login_date";
+
+    public static final String LOGIN_FLAG = "login_flag";
+
+    public static final String DEFAULT_PWD = "default_pwd";
 
 }

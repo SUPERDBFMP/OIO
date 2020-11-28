@@ -57,3 +57,5 @@ management:
     web:
       exposure:
         include: "*"
+
+oio.defaultPassword: '123456'
