@@ -3,7 +3,7 @@ package indi.dbfmp.oio.oauth.core.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import indi.dbfmp.oio.oauth.core.dto.webDto.ResetPwdDto;
 import indi.dbfmp.oio.oauth.core.entity.Users;
-import indi.dbfmp.oio.oauth.core.exception.CommonException;
+import inid.dbfmp.oauth.api.exception.CommonException;
 import indi.dbfmp.oio.oauth.core.innerService.IUsersInnerService;
 import inid.dbfmp.oauth.api.enums.StatusEnums;
 import lombok.extern.slf4j.Slf4j;

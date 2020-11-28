@@ -2,17 +2,13 @@ package indi.dbfmp.oio.oauth.core.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import indi.dbfmp.oio.oauth.core.dto.UserRoleGroupDto;
 import indi.dbfmp.oio.oauth.core.entity.*;
-import indi.dbfmp.oio.oauth.core.enums.EventStatus;
 import indi.dbfmp.oio.oauth.core.enums.EventTypes;
 import indi.dbfmp.oio.oauth.core.event.update.GroupsUpdateEventListener;
 import indi.dbfmp.oio.oauth.core.event.update.UserRolePermissionUpdateEvent;
-import indi.dbfmp.oio.oauth.core.exception.CommonException;
+import inid.dbfmp.oauth.api.exception.CommonException;
 import indi.dbfmp.oio.oauth.core.innerService.*;
 import indi.dbfmp.oio.oauth.core.service.transaction.UserRoleServiceTransaction;
-import indi.dbfmp.web.common.dto.CommonResult;
 import inid.dbfmp.oauth.api.enums.StatusEnums;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>

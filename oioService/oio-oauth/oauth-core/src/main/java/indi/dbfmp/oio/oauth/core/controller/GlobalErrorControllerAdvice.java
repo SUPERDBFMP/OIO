@@ -1,6 +1,6 @@
 package indi.dbfmp.oio.oauth.core.controller;
 
-import indi.dbfmp.oio.oauth.core.exception.CommonException;
+import inid.dbfmp.oauth.api.exception.CommonException;
 import indi.dbfmp.oio.oauth.core.exception.ResetPasswordException;
 import indi.dbfmp.web.common.dto.CommonResult;
 import indi.dbfmp.web.common.dto.ResultCode;

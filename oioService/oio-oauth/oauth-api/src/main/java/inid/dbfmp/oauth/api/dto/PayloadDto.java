@@ -1,8 +1,6 @@
 package inid.dbfmp.oauth.api.dto;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,7 +14,8 @@ import java.util.List;
  * @name: PayloadDto
  * @since 2020/10/11 3:56 下午
  */
-
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Builder
@@ -33,5 +32,6 @@ public class PayloadDto implements Serializable {
     private String appType;
     private String clientId;
     private String otherTokenId;
+    private String orgId;
 
 }

@@ -1,11 +1,11 @@
 package indi.dbfmp.oio.gateway.filter;
 
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
 import indi.dbfmp.web.common.dto.CommonResult;
 import inid.dbfmp.oauth.api.dto.PayloadDto;
-import inid.dbfmp.oauth.api.service.JwtTokenService;
+import inid.dbfmp.oauth.api.dto.PermissionCheck;
+import inid.dbfmp.oauth.api.service.DubboAuthService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -23,43 +23,46 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 
-
 /**
  * <p>
- *  全局权限过滤器
+ *  权限检查过滤器
  * </p>
  *
  * @author dbfmp
- * @name: AuthGlobalFilter
- * @since 2020/10/11 2:49 下午
+ * @name: PermissionCheckGlobalFilter
+ * @since 2020/11/28 下午8:23
  */
 @Slf4j
 //过滤器优先级
-@Order(0)
+@Order(2)
 @Component
-public class AuthGlobalFilter implements GlobalFilter {
+public class PermissionCheckGlobalFilter implements GlobalFilter {
 
     @Reference(check = false,group = "${spring.profiles.active}")
-    private JwtTokenService jwtTokenService;
+    private DubboAuthService dubboAuthService;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        String token = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (StrUtil.isBlank(token)) {
+        ServerHttpRequest request = exchange.getRequest();
+        String pass = exchange.getRequest().getHeaders().getFirst("whiteUrl");
+        if ("pass".equals(pass)) {
             return chain.filter(exchange);
         }
-        //调用服务校验token
-        try {
-            PayloadDto payloadDto = jwtTokenService.verifyAndGetPayloadDto(token);
-            ServerHttpRequest request = exchange.getRequest().mutate().header("user", JSONObject.toJSONString(payloadDto)).build();
-            exchange = exchange.mutate().request(request).build();
-        } catch (Exception e) {
-            //todo 多种失败异常判断
-            log.error("token校验失败！",e);
+        PayloadDto payloadDto = JSONObject.parseObject(exchange.getRequest().getHeaders().getFirst("user"),PayloadDto.class);
+        if (null == payloadDto) {
             ServerHttpResponse response = exchange.getResponse();
             response.setStatusCode(HttpStatus.OK);
             response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-            String body= JSONUtil.toJsonStr(CommonResult.failed("token校验失败！"));
+            String body= JSONUtil.toJsonStr(CommonResult.failed("非法操作！"));
+            DataBuffer buffer =  response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
+            return response.writeWith(Mono.just(buffer));
+        }
+        if (!dubboAuthService.permissionCheck(PermissionCheck.builder().url(request.getURI().getPath()).userId(payloadDto.getUserId()).orgId(payloadDto.getOrgId()).build())) {
+            //无权访问
+            ServerHttpResponse response = exchange.getResponse();
+            response.setStatusCode(HttpStatus.OK);
+            response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+            String body= JSONUtil.toJsonStr(CommonResult.forbidden("没有权限访问哦～"));
             DataBuffer buffer =  response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
             return response.writeWith(Mono.just(buffer));
         }

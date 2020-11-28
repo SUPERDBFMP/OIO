@@ -34,7 +34,7 @@ public class DubboAuthServiceImpl implements DubboAuthService {
      */
     @Override
     public boolean roleCheck(RoleCheck roleCheck) {
-        RoleCheckDto roleCheckDto = RoleCheckDto.builder().userId(roleCheck.getUserId()).url(roleCheck.getUrl()).build();
+        RoleCheckDto roleCheckDto = RoleCheckDto.builder().userId(roleCheck.getUserId()).url(roleCheck.getUrl()).orgId(roleCheck.getOrgId()).build();
         return authService.roleCheck(roleCheckDto);
     }
 
@@ -46,7 +46,7 @@ public class DubboAuthServiceImpl implements DubboAuthService {
      */
     @Override
     public boolean permissionCheck(PermissionCheck permissionCheck) {
-        PermissionCheckDto permissionCheckDto = PermissionCheckDto.builder().userId(permissionCheck.getUserId()).url(permissionCheck.getUrl()).build();
+        PermissionCheckDto permissionCheckDto = PermissionCheckDto.builder().userId(permissionCheck.getUserId()).url(permissionCheck.getUrl()).orgId(permissionCheck.getOrgId()).build();
         return authService.permissionCheck(permissionCheckDto);
     }
 }

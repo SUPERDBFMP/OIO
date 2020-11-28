@@ -1,4 +1,8 @@
-package indi.dbfmp.oio.oauth.core.exception;
+package inid.dbfmp.oauth.api.exception;
+
+import indi.dbfmp.web.common.dto.ResultCode;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * <p>
@@ -9,7 +13,11 @@ package indi.dbfmp.oio.oauth.core.exception;
  * @name: CommonException
  * @since 2020/10/12 12:40 上午
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class CommonException extends RuntimeException{
+
+    private ResultCode resultCode = ResultCode.FAILED;
 
     /**
      * Constructs a new runtime exception with the specified detail message.
@@ -21,5 +29,10 @@ public class CommonException extends RuntimeException{
      */
     public CommonException(String message) {
         super(message);
+    }
+
+    public CommonException(ResultCode resultCode,String message) {
+        super(message);
+        this.resultCode = resultCode;
     }
 }

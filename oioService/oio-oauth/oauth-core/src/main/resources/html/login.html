@@ -122,7 +122,7 @@
                 this.loginLoading = true;
                 var that = this;
                 if (!this.showRestPwdByDefaultPwd) {
-                    axios.post('/login/loginByPwd', {
+                    axios.post('/oauth/login/loginByPwd', {
                         userName: this.username,
                         pwd: this.password,
                         clientId: this.clientId,
@@ -156,7 +156,7 @@
                         that.loginLoading = false;
                         return;
                     }
-                    axios.post('/users/setNewPwdByDefaultPwd', {
+                    axios.post('/oauth/users/setNewPwdByDefaultPwd', {
                         userName: this.username,
                         oldPwd: this.password,
                         newPwd: this.newPwdOne

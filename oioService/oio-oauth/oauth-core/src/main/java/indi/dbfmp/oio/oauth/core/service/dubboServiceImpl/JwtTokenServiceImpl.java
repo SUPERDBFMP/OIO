@@ -2,24 +2,17 @@ package indi.dbfmp.oio.oauth.core.service.dubboServiceImpl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import com.nimbusds.jose.JOSEException;
 import indi.dbfmp.oio.oauth.core.dto.webDto.RefreshDto;
 import indi.dbfmp.oio.oauth.core.dto.webDto.TokenDto;
-import indi.dbfmp.oio.oauth.core.exception.CommonException;
+import inid.dbfmp.oauth.api.exception.CommonException;
 import indi.dbfmp.oio.oauth.core.service.impl.TokenService;
-import inid.dbfmp.oauth.api.dto.PayloadDto;
 import inid.dbfmp.oauth.api.dto.RefreshToken;
 import inid.dbfmp.oauth.api.dto.Token;
 import inid.dbfmp.oauth.api.dto.VerifyTokenDto;
 import inid.dbfmp.oauth.api.service.JwtTokenService;
-import inid.dbfmp.oauth.api.utils.JwtTokenUtil;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.net.MalformedURLException;
-import java.text.ParseException;
 
 /**
  * <p>

@@ -2,7 +2,10 @@ package indi.dbfmp.oio.gateway.filter;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import indi.dbfmp.oio.gateway.config.OioGatewayConfig;
 import indi.dbfmp.web.common.dto.CommonResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +24,10 @@ import reactor.core.publisher.Mono;
 import javax.annotation.PostConstruct;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -36,22 +42,19 @@ import java.util.HashSet;
 @Component
 public class WhiteUrlFiler implements WebFilter {
 
-    private HashSet<String> whiteUrlSet = new HashSet<>();
+    @Autowired
+    private OioGatewayConfig oioGatewayConfig;
 
-    @PostConstruct
-    public void setWhiteUrlSet() {
-        whiteUrlSet.add("/test/**");
-        whiteUrlSet.add("/*/token/get");
-    }
+
 
     @Override
     public Mono<Void> filter(ServerWebExchange serverWebExchange, WebFilterChain webFilterChain) {
         ServerHttpRequest request = serverWebExchange.getRequest();
         URI uri = request.getURI();
         PathMatcher pathMatcher = new AntPathMatcher();
-        for (String s : whiteUrlSet) {
+        for (String s : oioGatewayConfig.getWhiteUrlList()) {
             if (pathMatcher.match(s, uri.getPath())) {
-                request = serverWebExchange.getRequest().mutate().header(HttpHeaders.AUTHORIZATION, "").build();
+                request = serverWebExchange.getRequest().mutate().header(HttpHeaders.AUTHORIZATION, "").header("whiteUrl","pass").build();
                 serverWebExchange = serverWebExchange.mutate().request(request).build();
                 return webFilterChain.filter(serverWebExchange);
             }

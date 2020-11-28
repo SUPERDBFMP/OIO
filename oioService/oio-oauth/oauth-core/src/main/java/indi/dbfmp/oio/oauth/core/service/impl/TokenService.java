@@ -9,7 +9,8 @@ import indi.dbfmp.oio.oauth.core.constants.TokenRedisConstants;
 import indi.dbfmp.oio.oauth.core.dto.redisDto.OauthCodeDto;
 import indi.dbfmp.oio.oauth.core.entity.Client;
 import indi.dbfmp.oio.oauth.core.entity.Users;
-import indi.dbfmp.oio.oauth.core.exception.CommonException;
+import indi.dbfmp.web.common.dto.ResultCode;
+import inid.dbfmp.oauth.api.exception.CommonException;
 import indi.dbfmp.oio.oauth.core.exception.ResetPasswordException;
 import indi.dbfmp.oio.oauth.core.innerService.IClientInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IUsersInnerService;
@@ -119,7 +120,7 @@ public class TokenService {
             throw new CommonException("不要并发获取token");
         }
         //查询client数据
-        Client queryClient = clientInnerService.getOne(new LambdaQueryWrapper<Client>().eq(Client::getClientId, authCodeTokenDto.getClientId()).select(Client::getClientSecretKey));
+        Client queryClient = clientInnerService.getOne(new LambdaQueryWrapper<Client>().eq(Client::getClientId, authCodeTokenDto.getClientId()).select(Client::getClientSecretKey,Client::getOrgId));
         if (null == queryClient) {
             throw new CommonException("授权客户端信息不存在！请联系管理员！");
         }
@@ -133,6 +134,7 @@ public class TokenService {
                 .jti(IdUtil.objectId())
                 .userId(oauthCodeDto.getUserId())
                 .userName(oauthCodeDto.getUserNickName())
+                .orgId(queryClient.getOrgId())
                 .build();
         PayloadDto refreshTokenPayLoad = PayloadDto.builder()
                 .appType(authCodeTokenDto.getAppType())
@@ -140,6 +142,7 @@ public class TokenService {
                 .jti(IdUtil.objectId())
                 .userId(oauthCodeDto.getUserId())
                 .userName(oauthCodeDto.getUserNickName())
+                .orgId(queryClient.getOrgId())
                 .build();
         tokenPayLoad.setOtherTokenId(refreshTokenPayLoad.getJti());
         refreshTokenPayLoad.setOtherTokenId(tokenPayLoad.getJti());
@@ -172,9 +175,11 @@ public class TokenService {
         try {
             this.initJwtKey();
             payloadDto = JwtTokenUtil.verifyTokenByRSA(token, JwtTokenUtil.getDefaultRSAKey(jwtKey, jwtRsaKey));
-        } catch (JwtInvalidException | JwtExpiredException | MalformedURLException e) {
+        } catch (JwtInvalidException | MalformedURLException e) {
             //bug 抛不出去的异常，要做刷新的旧token还是有效的
             throw new CommonException(e.getMessage());
+        } catch (JwtExpiredException e){
+            throw new CommonException(ResultCode.TOKEN_EXPIRED,e.getMessage());
         } catch (ParseException | JOSEException e) {
             log.error("校验token异常！", e);
             throw new CommonException("系统异常，请稍后再试～");
