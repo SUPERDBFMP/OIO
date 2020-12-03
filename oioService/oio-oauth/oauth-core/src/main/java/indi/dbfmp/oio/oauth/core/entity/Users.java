@@ -3,12 +3,15 @@ package indi.dbfmp.oio.oauth.core.entity;
 import indi.dbfmp.oio.oauth.core.entity.BaseEntity;
 import java.time.LocalDateTime;
 
+import indi.dbfmp.validator.core.group.AddGroup;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * <p>
@@ -36,6 +39,7 @@ public class Users extends BaseEntity {
     /**
      * 用户密码
      */
+    @NotBlank(message = "用户密码不能为空",groups = AddGroup.class)
     private String password;
 
     /**
@@ -46,6 +50,7 @@ public class Users extends BaseEntity {
     /**
      * 用手机号,可用来登录
      */
+    @NotBlank(message = "手机号不能为空",groups = AddGroup.class)
     private String phone;
 
     /**

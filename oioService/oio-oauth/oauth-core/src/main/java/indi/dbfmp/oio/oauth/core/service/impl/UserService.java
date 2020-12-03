@@ -1,5 +1,6 @@
 package indi.dbfmp.oio.oauth.core.service.impl;
 
+import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import indi.dbfmp.oio.oauth.core.dto.webDto.ResetPwdDto;
 import indi.dbfmp.oio.oauth.core.entity.Users;
@@ -54,6 +55,20 @@ public class UserService {
         if (!usersInnerService.updateById(queryUser)) {
             throw new CommonException("更新密码失败！");
         }
+    }
+
+    public Users registerUser(Users users, boolean isDefaultPwd) {
+        if (isDefaultPwd) {
+            users.setPassword(defaultPassword);
+            users.setDefaultPwd(1);
+        } else {
+            users.setDefaultPwd(0);
+        }
+        //密码加密
+        users.setPassword(users.getPassword());
+        users.setUserId(IdUtil.objectId());
+        usersInnerService.save(users);
+        return users;
     }
 
 }

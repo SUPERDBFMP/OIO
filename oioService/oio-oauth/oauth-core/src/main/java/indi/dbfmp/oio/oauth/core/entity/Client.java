@@ -38,7 +38,7 @@ public class Client extends BaseEntity {
     /**
      * 应用是否可调用,0:不可调用,1：可调用
      */
-    private String accessFlag;
+    private Integer accessFlag;
 
     /**
      * 组织机构id
