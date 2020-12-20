@@ -1,9 +1,18 @@
 package indi.dbfmp.oio.oauth.core.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import indi.dbfmp.oio.oauth.core.dto.webDto.ResetPwdDto;
+import indi.dbfmp.oio.oauth.core.dto.webDto.UserInfoDto;
+import indi.dbfmp.oio.oauth.core.entity.UserPermission;
+import indi.dbfmp.oio.oauth.core.entity.UserRole;
 import indi.dbfmp.oio.oauth.core.entity.Users;
+import indi.dbfmp.oio.oauth.core.innerService.IUserPermissionInnerService;
+import indi.dbfmp.oio.oauth.core.innerService.IUserRoleInnerService;
+import indi.dbfmp.oio.oauth.core.interceptor.UserInfoContext;
+import inid.dbfmp.oauth.api.dto.PayloadDto;
 import inid.dbfmp.oauth.api.exception.CommonException;
 import indi.dbfmp.oio.oauth.core.innerService.IUsersInnerService;
 import inid.dbfmp.oauth.api.enums.StatusEnums;
@@ -11,6 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -29,6 +41,10 @@ public class UserService {
     private String defaultPassword;
     @Autowired
     private IUsersInnerService usersInnerService;
+    @Autowired
+    private IUserRoleInnerService userRoleInnerService;
+    @Autowired
+    private IUserPermissionInnerService userPermissionInnerService;
 
     /**
      * 使用默认密码设置新密码
@@ -69,6 +85,47 @@ public class UserService {
         users.setUserId(IdUtil.objectId());
         usersInnerService.save(users);
         return users;
+    }
+
+    public UserInfoDto getUserInfo() {
+        PayloadDto userContext = UserInfoContext.getUserInfo();
+        if (null == userContext) {
+            return new UserInfoDto();
+        }
+        Users queryUser = usersInnerService.getOne(new LambdaQueryWrapper<Users>().eq(Users::getUserId,userContext.getUserId()));
+        if (null == queryUser) {
+            return new UserInfoDto();
+        }
+        //查询角色
+        List<UserRole> userRoleList = userRoleInnerService.list(new LambdaQueryWrapper<UserRole>()
+                .eq(UserRole::getOrgId,userContext.getOrgId())
+                .eq(UserRole::getUserId,userContext.getUserId()));
+        List<UserPermission> userPermissionList = userPermissionInnerService.list(new LambdaQueryWrapper<UserPermission>()
+                .eq(UserPermission::getOrgId,userContext.getOrgId())
+                .eq(UserPermission::getUserId,userContext.getUserId()));
+        UserInfoDto userInfoDto = UserInfoDto.builder()
+                .userId(userContext.getUserId())
+                .name(queryUser.getNickName())
+                .build();
+        if (CollectionUtil.isNotEmpty(userRoleList)) {
+            List<UserInfoDto.UserRoleDto> userRoleDtoList = new ArrayList<>();
+            userRoleList.forEach(userRole -> {
+                UserInfoDto.UserRoleDto userRoleDto = new UserInfoDto.UserRoleDto();
+                BeanUtil.copyProperties(userRole,userRoleDto);
+                userRoleDtoList.add(userRoleDto);
+            });
+            userInfoDto.setUserRoleList(userRoleDtoList);
+        }
+        if (CollectionUtil.isNotEmpty(userPermissionList)) {
+            List<UserInfoDto.UserPermissionDto> userPermissionDtoList = new ArrayList<>();
+            userPermissionList.forEach(userPermission -> {
+                UserInfoDto.UserPermissionDto userPermissionDto = new UserInfoDto.UserPermissionDto();
+                BeanUtil.copyProperties(userPermission,userPermissionDto);
+                userPermissionDtoList.add(userPermissionDto);
+            });
+            userInfoDto.setUserPermissionList(userPermissionDtoList);
+        }
+        return userInfoDto;
     }
 
 }

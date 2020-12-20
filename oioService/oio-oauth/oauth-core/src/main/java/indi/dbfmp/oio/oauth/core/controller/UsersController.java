@@ -33,4 +33,9 @@ public class UsersController {
         return CommonResult.success("修改密码成功！");
     }
 
+    @RequestMapping("/getUserInfo")
+    public CommonResult<?> getUserInfo() {
+        return CommonResult.success(userService.getUserInfo());
+    }
+
 }

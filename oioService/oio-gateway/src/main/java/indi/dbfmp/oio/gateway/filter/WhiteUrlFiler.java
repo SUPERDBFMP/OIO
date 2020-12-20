@@ -64,7 +64,7 @@ public class WhiteUrlFiler implements WebFilter {
         if (StrUtil.isBlank(token)) {
             //无权访问
             ServerHttpResponse response = serverWebExchange.getResponse();
-            response.setStatusCode(HttpStatus.OK);
+            response.setStatusCode(HttpStatus.FORBIDDEN);
             response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
             String body= JSONUtil.toJsonStr(CommonResult.forbidden("没有权限访问哦～"));
             DataBuffer buffer =  response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));

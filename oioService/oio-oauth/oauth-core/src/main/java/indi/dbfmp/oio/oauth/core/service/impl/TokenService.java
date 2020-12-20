@@ -72,7 +72,7 @@ public class TokenService {
             log.info("getOauthCode->无效的ClientId:{}", clientId);
             throw new CommonException("无效的客户端！");
         }
-        if (!String.valueOf(StatusEnums.VALID.getCode()).equals(queryClient.getAccessFlag())) {
+        if (StatusEnums.UN_VALID.getCode() == queryClient.getAccessFlag()) {
             log.info("getOauthCode->被封禁的ClientId:{}", clientId);
             throw new CommonException("客户端被封禁，请联系管理员！");
         }

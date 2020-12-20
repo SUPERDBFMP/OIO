@@ -47,6 +47,8 @@ public class UserRoleService {
     private ApplicationEventPublisher eventPublisher;
     @Autowired
     private EventService eventService;
+    @Autowired
+    private IPermissionInnerService permissionInnerService;
 
     /**
      * 授权新角色给用户
@@ -75,6 +77,7 @@ public class UserRoleService {
             userRoleList.add(UserRole.builder()
                     .roleName(roles.getRoleName())
                     .roleId(roles.getId())
+                    .roleCode(roles.getRoleCode())
                     .userId(userId)
                     .orgId(queryOrg.getId())
                     .orgName(queryOrg.getOrgName())
@@ -89,10 +92,12 @@ public class UserRoleService {
             if (CollectionUtil.isNotEmpty(rolePermissionList)) {
                 rolePermissionList.forEach(rolePermission -> {
                     Org queryOrg = orgInnerService.getById(rolePermission.getOrgId());
+                    Permission queryPermission = permissionInnerService.getById(rolePermission.getPermissionId());
                     userPermissionList.add(UserPermission.builder()
                             .userId(userId)
                             .permissionId(rolePermission.getId())
                             .permissionName(rolePermission.getPermissionName())
+                            .permissionCode(queryPermission.getPermissionCode())
                             .orgId(queryOrg.getId())
                             .orgName(queryOrg.getOrgName())
                             .build());

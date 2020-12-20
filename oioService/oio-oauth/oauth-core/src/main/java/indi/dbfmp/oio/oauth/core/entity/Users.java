@@ -2,6 +2,7 @@ package indi.dbfmp.oio.oauth.core.entity;
 
 import indi.dbfmp.oio.oauth.core.entity.BaseEntity;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import indi.dbfmp.validator.core.group.AddGroup;
 import lombok.AllArgsConstructor;
@@ -71,7 +72,7 @@ public class Users extends BaseEntity {
     /**
      * 用户最后登录的时间
      */
-    private LocalDateTime loginDate;
+    private Date loginDate;
 
     /**
      * 用户是否可登录,0:可登录,1不可登录

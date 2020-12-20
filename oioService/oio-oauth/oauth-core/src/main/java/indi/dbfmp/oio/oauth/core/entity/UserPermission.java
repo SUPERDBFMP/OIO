@@ -46,6 +46,11 @@ public class UserPermission extends BaseEntity {
     private String permissionName;
 
     /**
+     * 权限代码
+     */
+    private String permissionCode;
+
+    /**
      * 组织机构id
      */
     private String orgId;
@@ -63,6 +68,8 @@ public class UserPermission extends BaseEntity {
     public static final String PERMISSION_ID = "permission_id";
 
     public static final String PERMISSION_NAME = "permission_name";
+
+    public static final String PERMISSION_CODE = "permission_code";
 
     public static final String ORG_ID = "org_id";
 

@@ -37,6 +37,11 @@ public class UserRole extends BaseEntity {
     private String roleName;
 
     /**
+     * 角色代码
+     */
+    private String roleCode;
+
+    /**
      * 用户id
      */
     private String userId;
@@ -60,6 +65,8 @@ public class UserRole extends BaseEntity {
     public static final String ROLE_ID = "role_id";
 
     public static final String ROLE_NAME = "role_name";
+
+    public static final String ROLE_CODE = "role_code";
 
     public static final String USER_ID = "user_id";
 
