@@ -30,8 +30,11 @@ public class GlobalErrorControllerAdvice {
      */
     @ExceptionHandler(CommonException.class)
     public CommonResult<?> MessageExceptionHandler(CommonException e) {
-        return CommonResult.failed(e.getMessage());
-
+        if (null != e.getResultCode()) {
+            return CommonResult.failed(e.getResultCode(), e.getMessage());
+        } else {
+            return CommonResult.failed(e.getMessage());
+        }
     }
 
     @ExceptionHandler(ValidationException.class)
