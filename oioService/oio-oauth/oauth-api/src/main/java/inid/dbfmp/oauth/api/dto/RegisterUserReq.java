@@ -35,6 +35,12 @@ public class RegisterUserReq implements Serializable {
     private String phone;
 
     /**
+     * 用手机号,可用来登录
+     */
+    @NotBlank(message = "用户名不能为空")
+    private String userName;
+
+    /**
      * 邮箱账号
      */
     private String email;

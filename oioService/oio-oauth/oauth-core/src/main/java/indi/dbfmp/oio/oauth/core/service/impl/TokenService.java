@@ -78,7 +78,7 @@ public class TokenService {
         }
         //查询用户
         Users queryUser = usersInnerService.getOne(new LambdaQueryWrapper<Users>().eq(Users::getPhone, username)
-                .select(Users::getPassword, Users::getLoginFlag, Users::getNickName, Users::getUserId,Users::getDefaultPwd));
+                .select(Users::getId,Users::getPassword, Users::getLoginFlag, Users::getNickName, Users::getUserId,Users::getDefaultPwd));
         //todo 使用加密的密码
         if (null == queryUser || !queryUser.getPassword().equals(pwd)) {
             throw new CommonException("用户名或密码错误！");
@@ -94,7 +94,7 @@ public class TokenService {
                 .oauthCode(IdUtil.objectId())
                 .appType(appType)
                 .clientId(clientId)
-                .userId(queryUser.getUserId())
+                .userId(queryUser.getId())
                 .userNickName(queryUser.getNickName())
                 .build();
         if (redisUtil.set(oauthCodeDto.getOauthCode(), oauthCodeDto, 5 * 60)) {

@@ -80,7 +80,7 @@ public class PermissionController {
                 .orgId(permission.getOrgId())
                 .orgName(permission.getOrgName())
                 .build();
-        Event event = eventService.createProcessingEvent(PermissionUpdateEventListener.class.getSimpleName(),JSONObject.toJSONString(permissionUpdateEvent),EventTypes.PermissionUpdate);
+        Event event = eventService.createProcessingEvent(PermissionUpdateEventListener.class.getSimpleName(),permissionUpdateEvent,EventTypes.PermissionUpdate);
         permissionUpdateEvent.setEventId(event.getId());
         eventPublisher.publishEvent(permissionUpdateEvent);
         return CommonResult.success(updateResult);

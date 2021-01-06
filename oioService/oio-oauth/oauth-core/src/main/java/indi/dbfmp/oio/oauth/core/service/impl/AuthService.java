@@ -84,7 +84,7 @@ public class AuthService {
     @ValidateBefore
     public boolean roleCheck(RoleCheckDto roleCheckDto) {
         //检查用户合法性
-        if (usersInnerService.count(new LambdaQueryWrapper<Users>().eq(Users::getUserId, roleCheckDto.getUserId()).eq(Users::getLoginFlag, StatusEnums.VALID.getCode())) <= 0) {
+        if (usersInnerService.count(new LambdaQueryWrapper<Users>().eq(Users::getId, roleCheckDto.getUserId()).eq(Users::getLoginFlag, StatusEnums.VALID.getCode())) <= 0) {
             return false;
         }
         boolean hasCheck = redisUtil.hasKey(StrUtil.format(OauthRedisConstants.URL_ROLE_CHECK,roleCheckDto.getUrl(),roleCheckDto.getUserId()));
@@ -153,7 +153,7 @@ public class AuthService {
     @ValidateBefore
     public boolean permissionCheck(PermissionCheckDto permissionCheckDto) {
         //检查用户合法性
-        if (usersInnerService.count(new LambdaQueryWrapper<Users>().eq(Users::getUserId, permissionCheckDto.getUserId()).eq(Users::getLoginFlag, StatusEnums.VALID.getCode())) <= 0) {
+        if (usersInnerService.count(new LambdaQueryWrapper<Users>().eq(Users::getId, permissionCheckDto.getUserId()).eq(Users::getLoginFlag, StatusEnums.VALID.getCode())) <= 0) {
             return false;
         }
         boolean hasCheck = redisUtil.hasKey(StrUtil.format(OauthRedisConstants.URL_PERMISSION_CHECK,permissionCheckDto.getUrl(),permissionCheckDto.getUserId()));

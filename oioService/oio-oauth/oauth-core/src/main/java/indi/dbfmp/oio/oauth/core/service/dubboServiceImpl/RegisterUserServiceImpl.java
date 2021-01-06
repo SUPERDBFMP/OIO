@@ -86,12 +86,13 @@ public class RegisterUserServiceImpl implements RegisterUserService {
                 .email(req.getEmail())
                 .defaultPwd(req.getDefaultPwd())
                 .password(req.getPassword())
+                .nickName(req.getUserName())
                 .build(),1 == req.getDefaultPwd());
         //授予权限
-        if (groupUserService.saveUserToNewGroup(rUsers.getUserId(), queryGroup.getId())) {
+        if (groupUserService.saveUserToNewGroup(rUsers.getId(), queryGroup.getId())) {
             return RegisterUserResp.builder()
                     .phone(rUsers.getPhone())
-                    .userId(rUsers.getUserId())
+                    .userId(rUsers.getId())
                     .build();
         }
         throw new CommonException("注册用户失败！");

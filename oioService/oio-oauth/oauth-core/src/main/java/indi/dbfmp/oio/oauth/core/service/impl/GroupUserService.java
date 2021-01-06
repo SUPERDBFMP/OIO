@@ -2,6 +2,7 @@ package indi.dbfmp.oio.oauth.core.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import indi.dbfmp.oio.oauth.core.entity.*;
 import indi.dbfmp.oio.oauth.core.enums.EventTypes;
 import indi.dbfmp.oio.oauth.core.event.update.GroupsUpdateEventListener;
@@ -54,6 +55,10 @@ public class GroupUserService {
     private IUserPermissionInnerService userPermissionInnerService;
     @Autowired
     private EventService eventService;
+    @Autowired
+    private IRolesInnerService rolesInnerService;
+    @Autowired
+    private IPermissionInnerService permissionInnerService;
 
     /**
      * 添加用户到新的用户组
@@ -72,7 +77,7 @@ public class GroupUserService {
             throw new CommonException("用户被封禁！无法添加用户组操作！");
         }
         //查询用户是否存在此用户组
-        if (groupUserInnerService.count(groupUserInnerService.lambdaQuery().eq(GroupUser::getUserId, userId).eq(GroupUser::getGroupId, groupId)) > 0) {
+        if (groupUserInnerService.count(new LambdaQueryWrapper<GroupUser>().eq(GroupUser::getUserId, userId).eq(GroupUser::getGroupId, groupId)) > 0) {
             return true;
         }
         Groups queryGroup = groupsInnerService.getById(groupId);
@@ -87,19 +92,21 @@ public class GroupUserService {
                 .userName(queryUser.getNickName())
                 .build();
         //查询分组角色
-        List<GroupRole> groupRoleList = groupRoleInnerService.list(groupRoleInnerService.lambdaQuery().eq(GroupRole::getGroupId, groupId));
+        List<GroupRole> groupRoleList = groupRoleInnerService.list(new LambdaQueryWrapper<GroupRole>().eq(GroupRole::getGroupId, groupId));
         if (CollectionUtil.isEmpty(groupRoleList)) {
             return groupUserInnerService.save(groupUser);
         }
         List<UserRole> userRoleList = new ArrayList<>();
         groupRoleList.forEach(groupRole -> {
             if (userRoleInnerService.lambdaQuery().eq(UserRole::getUserId, userId).eq(UserRole::getRoleId, groupRole.getRoleId()).count() <= 0) {
+                Roles queryRole = rolesInnerService.getById(groupRole.getRoleId());
                 userRoleList.add(UserRole.builder()
                         .orgId(queryOrg.getId())
                         .orgName(queryOrg.getOrgName())
                         .userId(userId)
                         .userName(queryUser.getNickName())
                         .roleId(groupRole.getRoleId())
+                        .roleCode(queryRole.getRoleCode())
                         .roleName(groupRole.getRoleName())
                         .build());
             }
@@ -111,12 +118,14 @@ public class GroupUserService {
         if (CollectionUtil.isNotEmpty(rolePermissions)) {
             rolePermissions.forEach(rolePermission -> {
                 if (userPermissionInnerService.lambdaQuery().eq(UserPermission::getUserId, userId).eq(UserPermission::getPermissionId, rolePermission.getPermissionId()).count() <= 0) {
+                    Permission queryPermission = permissionInnerService.getById(rolePermission.getPermissionId());
                     userPermissionList.add(UserPermission.builder()
                             .orgId(queryOrg.getId())
                             .orgName(queryOrg.getOrgName())
                             .userId(userId)
                             .userName(queryUser.getNickName())
                             .permissionId(rolePermission.getPermissionId())
+                            .permissionCode(queryPermission.getPermissionCode())
                             .permissionName(rolePermission.getPermissionName())
                             .build());
                 }
@@ -127,7 +136,7 @@ public class GroupUserService {
             UserRolePermissionUpdateEvent updateEvent = UserRolePermissionUpdateEvent.builder()
                     .userId(userId)
                     .build();
-            Event event = eventService.createProcessingEvent(GroupsUpdateEventListener.class.getSimpleName(),JSONObject.toJSONString(updateEvent),EventTypes.UserRolePermissionUpdate);
+            Event event = eventService.createProcessingEvent(GroupsUpdateEventListener.class.getSimpleName(),updateEvent,EventTypes.UserRolePermissionUpdate);
             updateEvent.setEventId(event.getId());
             //发送更新事件
             eventPublisher.publishEvent(updateEvent);
@@ -171,7 +180,7 @@ public class GroupUserService {
             UserRolePermissionUpdateEvent updateEvent = UserRolePermissionUpdateEvent.builder()
                     .userId(userId)
                     .build();
-            Event event = eventService.createProcessingEvent(GroupsUpdateEventListener.class.getSimpleName(),JSONObject.toJSONString(updateEvent),EventTypes.UserRolePermissionUpdate);
+            Event event = eventService.createProcessingEvent(GroupsUpdateEventListener.class.getSimpleName(),updateEvent,EventTypes.UserRolePermissionUpdate);
             updateEvent.setEventId(event.getId());
             //发送更新事件
             eventPublisher.publishEvent(updateEvent);

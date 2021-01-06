@@ -80,7 +80,7 @@ public class OrgController {
                 .orgName(saveOrg.getOrgName())
                 .orgType(saveOrg.getOrgType())
                 .build();
-        Event event = eventService.createProcessingEvent(OrgUpdateEventListener.class.getSimpleName(),JSONObject.toJSONString(orgUpdateEvent),EventTypes.OrgUpdate);
+        Event event = eventService.createProcessingEvent(OrgUpdateEventListener.class.getSimpleName(),orgUpdateEvent,EventTypes.OrgUpdate);
         orgUpdateEvent.setEventId(event.getId());
         eventPublisher.publishEvent(orgUpdateEvent);
         return CommonResult.success(updateResult);

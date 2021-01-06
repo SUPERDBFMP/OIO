@@ -77,7 +77,7 @@ public class GroupsController {
                 .groupCode(groups.getGroupCode())
                 .groupName(groups.getGroupName())
                 .build();
-        Event event = eventService.createProcessingEvent(GroupsUpdateEventListener.class.getSimpleName(),JSONObject.toJSONString(groupsUpdateEvent),EventTypes.GroupsUpdate);
+        Event event = eventService.createProcessingEvent(GroupsUpdateEventListener.class.getSimpleName(),groupsUpdateEvent,EventTypes.GroupsUpdate);
         groupsUpdateEvent.setEventId(event.getId());
         eventPublisher.publishEvent(groupsUpdateEvent);
         return CommonResult.success(updateResult);

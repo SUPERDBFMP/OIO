@@ -17,6 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <java.version>1.8</java.version>
         <junit.version>4.12</junit.version>
         <log4j.version>1.2.17</log4j.version>
         <lombok.version>1.16.18</lombok.version>
@@ -161,7 +162,7 @@
         </dependency>
     </dependencies>
 
-    <build>
+    <!--<build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -173,7 +174,7 @@
                 </configuration>
             </plugin>
         </plugins>
-    </build>
+    </build>-->
 
     <distributionManagement>
         <repository>

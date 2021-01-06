@@ -88,6 +88,12 @@
             <groupId>indi.dbfmp</groupId>
             <artifactId>spring-boot-validator-starter</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.objenesis/objenesis -->
+        <dependency>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
+            <version>2.6</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -109,5 +115,68 @@
             </properties>
         </profile>
     </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <!-- 生成的jar中，不要包含pom.xml和pom.properties这两个文件 -->
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <manifest>
+                            <!-- 是否要把第三方jar加入到类构建路径 -->
+                            <addClasspath>true</addClasspath>
+                            <!-- 外部依赖jar包的最终位置 -->
+                            <!-- 因为我们将第三方jar和本项目jar放在同一个目录下，这里就使用./ -->
+                            <classpathPrefix>./lib</classpathPrefix>
+                            <!-- 项目启动类 -->
+                            <mainClass>indi.dbfmp.oio.oauth.core.OioOauthCoreApplication</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <!--<plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.3.0.RELEASE</version>
+            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <!-- 打包时跳过测试 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>${basedir}/src/main/assembly/release.xml</descriptor>
+                    </descriptors>
+                    <finalName>oio-core</finalName>
+                    <outputDirectory>${project.basedir}/pk</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

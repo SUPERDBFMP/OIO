@@ -84,7 +84,7 @@ public class RolesController {
                 .orgId(roles.getOrgId())
                 .orgName(roles.getOrgName())
                 .build();
-        Event event = eventService.createProcessingEvent(RolesUpdateEventListener.class.getSimpleName(),JSONObject.toJSONString(rolesUpdateEvent),EventTypes.RolesUpdate);
+        Event event = eventService.createProcessingEvent(RolesUpdateEventListener.class.getSimpleName(),rolesUpdateEvent,EventTypes.RolesUpdate);
         rolesUpdateEvent.setEventId(event.getId());
         eventPublisher.publishEvent(rolesUpdateEvent);
         return CommonResult.success(updateResult);

@@ -109,7 +109,7 @@ public class UserRoleService {
             UserRolePermissionUpdateEvent updateEvent = UserRolePermissionUpdateEvent.builder()
                     .userId(userId)
                     .build();
-            Event event = eventService.createProcessingEvent(GroupsUpdateEventListener.class.getSimpleName(),JSONObject.toJSONString(updateEvent),EventTypes.UserRolePermissionUpdate);
+            Event event = eventService.createProcessingEvent(GroupsUpdateEventListener.class.getSimpleName(),updateEvent,EventTypes.UserRolePermissionUpdate);
             updateEvent.setEventId(event.getId());
             //发送更新事件
             eventPublisher.publishEvent(updateEvent);
@@ -145,7 +145,7 @@ public class UserRoleService {
             UserRolePermissionUpdateEvent updateEvent = UserRolePermissionUpdateEvent.builder()
                     .userId(userId)
                     .build();
-            Event event = eventService.createProcessingEvent(GroupsUpdateEventListener.class.getSimpleName(),JSONObject.toJSONString(updateEvent),EventTypes.UserRolePermissionUpdate);
+            Event event = eventService.createProcessingEvent(GroupsUpdateEventListener.class.getSimpleName(),updateEvent,EventTypes.UserRolePermissionUpdate);
             updateEvent.setEventId(event.getId());
             //发送更新事件
             eventPublisher.publishEvent(updateEvent);

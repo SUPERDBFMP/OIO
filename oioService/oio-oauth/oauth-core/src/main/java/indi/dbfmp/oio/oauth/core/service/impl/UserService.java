@@ -82,7 +82,7 @@ public class UserService {
         }
         //密码加密
         users.setPassword(users.getPassword());
-        users.setUserId(IdUtil.objectId());
+        //users.setUserId(IdUtil.objectId());
         usersInnerService.save(users);
         return users;
     }
@@ -92,7 +92,7 @@ public class UserService {
         if (null == userContext) {
             return new UserInfoDto();
         }
-        Users queryUser = usersInnerService.getOne(new LambdaQueryWrapper<Users>().eq(Users::getUserId,userContext.getUserId()));
+        Users queryUser = usersInnerService.getOne(new LambdaQueryWrapper<Users>().eq(Users::getId,userContext.getUserId()));
         if (null == queryUser) {
             return new UserInfoDto();
         }
@@ -116,15 +116,15 @@ public class UserService {
             });
             userInfoDto.setUserRoleList(userRoleDtoList);
         }
+        List<UserInfoDto.UserPermissionDto> userPermissionDtoList = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(userPermissionList)) {
-            List<UserInfoDto.UserPermissionDto> userPermissionDtoList = new ArrayList<>();
             userPermissionList.forEach(userPermission -> {
                 UserInfoDto.UserPermissionDto userPermissionDto = new UserInfoDto.UserPermissionDto();
-                BeanUtil.copyProperties(userPermission,userPermissionDto);
+                BeanUtil.copyProperties(userPermission, userPermissionDto);
                 userPermissionDtoList.add(userPermissionDto);
             });
-            userInfoDto.setUserPermissionList(userPermissionDtoList);
         }
+        userInfoDto.setUserPermissionList(userPermissionDtoList);
         return userInfoDto;
     }
 
