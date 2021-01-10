@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerIntercep
 import com.baomidou.mybatisplus.extension.plugins.inner.IllegalSQLInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import indi.dbfmp.oio.oauth.core.uitls.OioIllegalSQLInnerInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -37,7 +38,7 @@ public class MybatisPlusConfig {
         //防止全表更新与删除
         interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
         //垃圾sql阻断
-        interceptor.addInnerInterceptor(new IllegalSQLInnerInterceptor());
+        interceptor.addInnerInterceptor(new OioIllegalSQLInnerInterceptor());
         return interceptor;
     }
 

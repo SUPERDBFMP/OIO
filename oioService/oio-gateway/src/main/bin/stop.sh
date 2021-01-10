@@ -48,7 +48,7 @@ if [ "$pid" == "" ] ; then
 	pid=`get_pid "appName=oio-gateway"`
 fi
 
-echo -e "`hostname`: stopping canal $pid ... "
+echo -e "`hostname`: stopping oio-gateway $pid ... "
 kill $pid
 
 LOOPS=0

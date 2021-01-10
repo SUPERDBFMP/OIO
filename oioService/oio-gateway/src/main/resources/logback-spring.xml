@@ -3,7 +3,7 @@
 
     <substitutionProperty name="max.size" value="100MB"/>
     <contextName>fundNotice-logback</contextName>
-    <property name="log.path" value="../logs" />
+    <property name="log.path" value="../../logs" />
 
 
     <!-- 读取application.yml中的属性 -->

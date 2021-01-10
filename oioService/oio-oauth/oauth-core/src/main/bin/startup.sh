@@ -27,8 +27,8 @@ if [ -z "$JAVA" ] ; then
   JAVA=$(which java)
 fi
 
-ALIBABA_JAVA="/usr/bin/java"
-TAOBAO_JAVA="/usr/bin/java"
+ALIBABA_JAVA="/usr/alibaba/java/bin/java"
+TAOBAO_JAVA="/opt/taobao/java/bin/java"
 if [ -z "$JAVA" ]; then
   if [ -f $ALIBABA_JAVA ] ; then
   	JAVA=$ALIBABA_JAVA
@@ -58,14 +58,14 @@ esac
 
 str=`file -L $JAVA | grep 64-bit`
 if [ -n "$str" ]; then
-	JAVA_OPTS="-server -Xms1024m -Xmx1024m"
+	JAVA_OPTS="-server -Xms512m -Xmx512m"
 else
-	JAVA_OPTS="-server -Xms1024m -Xmx1024m"
+	JAVA_OPTS="-server -Xms512m -Xmx512m"
 fi
 
 JAVA_OPTS="$JAVA_OPTS -XX:+UseG1GC -XX:MaxGCPauseMillis=250 -XX:+UseGCOverheadLimit -XX:+ExplicitGCInvokesConcurrent -XX:+PrintAdaptiveSizePolicy -XX:+PrintTenuringDistribution"
 JAVA_OPTS=" $JAVA_OPTS -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8"
-CANAL_OPTS="-DappName=ess-server"
+CANAL_OPTS="-DappName=oio-core"
 
 for i in $base/lib/*;
     do CLASSPATH=$i:"$CLASSPATH";
@@ -77,7 +77,7 @@ echo "cd to $bin_abs_path for workaround relative path"
 cd $bin_abs_path
 
 echo CLASSPATH :$CLASSPATH
-$JAVA $JAVA_OPTS $JAVA_DEBUG_OPT $CANAL_OPTS -classpath .:$CLASSPATH com.dbfmp.ess.boot.EssBootMain 1>>/dev/null 2>&1 &
+$JAVA $JAVA_OPTS $JAVA_DEBUG_OPT $CANAL_OPTS -classpath .:$CLASSPATH indi.dbfmp.oio.oauth.core.OioOauthCoreApplication 1>>/dev/null 2>&1 &
 echo $! > $base/bin/admin.pid
 
 echo "cd to $current_path for continue"

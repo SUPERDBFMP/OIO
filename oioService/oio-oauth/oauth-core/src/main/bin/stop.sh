@@ -39,22 +39,22 @@ get_pid() {
 base=`dirname $0`/..
 pidfile=$base/bin/admin.pid
 if [ ! -f "$pidfile" ];then
-	echo "ess-server is not running. exists"
+	echo "oio-gateway is not running. exists"
 	exit
 fi
 
 pid=`cat $pidfile`
 if [ "$pid" == "" ] ; then
-	pid=`get_pid "appName=ess-server"`
+	pid=`get_pid "appName=oio-core"`
 fi
 
-echo -e "`hostname`: stopping canal $pid ... "
+echo -e "`hostname`: stopping oio-core $pid ... "
 kill $pid
 
 LOOPS=0
 while (true);
 do
-	gpid=`get_pid "appName=canal-admin" "$pid"`
+	gpid=`get_pid "appName=oio-core" "$pid"`
     if [ "$gpid" == "" ] ; then
     	echo "Oook! cost:$LOOPS"
     	`rm $pidfile`

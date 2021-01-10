@@ -3,7 +3,7 @@
 
     <substitutionProperty name="max.size" value="100MB"/>
     <contextName>fundNotice-logback</contextName>
-    <property name="log.path" value="logs" />
+    <property name="log.path" value="../../logs" />
 
 
     <!-- 读取application.yml中的属性 -->
@@ -29,7 +29,7 @@
 
     <!--输出到文件-->
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.path}/oauth.log</file>
+        <file>${log.path}/oio-core.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/oauth.%d{yyyy-MM-dd}--%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -87,6 +87,7 @@
     <springProfile name="dev">
         <root level="debug">
             <appender-ref ref="asyncConsole"/>
+            <appender-ref ref="asyncFile" />
         </root>
     </springProfile>
 
