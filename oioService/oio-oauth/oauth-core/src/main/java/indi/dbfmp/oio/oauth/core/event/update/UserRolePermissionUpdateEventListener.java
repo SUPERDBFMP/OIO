@@ -76,6 +76,7 @@ public class UserRolePermissionUpdateEventListener implements RecoveryEvent<User
     @Override
     public void eventAction(UserRolePermissionUpdateEvent updateEvent) {
         Event event = new Event();
+        event.setId(updateEvent.getEventId());
         event.setEventStatus(EventStatus.PROCESSING.name());
         eventInnerService.updateById(event);
         List<String> matchKeyList = new ArrayList<>();
@@ -90,6 +91,9 @@ public class UserRolePermissionUpdateEventListener implements RecoveryEvent<User
             }
         });
         redisUtil.del(matchKeyList);
+        event.setEventStatus(EventStatus.SUCCESS.name());
+        event.setRemarks("更新成功！");
+        eventInnerService.updateById(event);
         log.info("删除用户:{}鉴权缓存成功！",updateEvent.getUserId());
     }
 }

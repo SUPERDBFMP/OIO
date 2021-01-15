@@ -7,6 +7,7 @@ import indi.dbfmp.oio.oauth.core.entity.*;
 import indi.dbfmp.oio.oauth.core.enums.EventTypes;
 import indi.dbfmp.oio.oauth.core.event.update.GroupsUpdateEventListener;
 import indi.dbfmp.oio.oauth.core.event.update.UserRolePermissionUpdateEvent;
+import indi.dbfmp.oio.oauth.core.event.update.UserRolePermissionUpdateEventListener;
 import inid.dbfmp.oauth.api.exception.CommonException;
 import indi.dbfmp.oio.oauth.core.innerService.*;
 import indi.dbfmp.oio.oauth.core.service.transaction.GroupUserServiceTransaction;
@@ -136,7 +137,7 @@ public class GroupUserService {
             UserRolePermissionUpdateEvent updateEvent = UserRolePermissionUpdateEvent.builder()
                     .userId(userId)
                     .build();
-            Event event = eventService.createProcessingEvent(GroupsUpdateEventListener.class.getSimpleName(),updateEvent,EventTypes.UserRolePermissionUpdate);
+            Event event = eventService.createProcessingEvent(UserRolePermissionUpdateEventListener.class.getSimpleName(),updateEvent,EventTypes.UserRolePermissionUpdate);
             updateEvent.setEventId(event.getId());
             //发送更新事件
             eventPublisher.publishEvent(updateEvent);

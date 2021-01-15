@@ -41,13 +41,11 @@ public class OrgUpdateEventListener implements RecoveryEvent<OrgUpdateEvent> {
     //todo 更多表更新
 
 
+    @Override
     public void eventAction(OrgUpdateEvent orgUpdateEvent) {
         log.info("收到org更新事件,orgUpdateEvent:{}", orgUpdateEvent);
-        if (StrUtil.isBlank(orgUpdateEvent.getId())) {
-            log.warn("orgUpdateEvent,警告！更新事件主键id为空！");
-            return;
-        }
         Event event = new Event();
+        event.setId(orgUpdateEvent.getEventId());
         event.setEventStatus(EventStatus.PROCESSING.name());
         eventInnerService.updateById(event);
         Permission permission = Permission.builder().orgId(orgUpdateEvent.getId()).orgName(orgUpdateEvent.getOrgName()).build();

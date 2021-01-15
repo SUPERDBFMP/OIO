@@ -1,0 +1,21 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  datasource:
+    # 使用Druid数据源
+    url: jdbc:mysql://rm-8vb0e137683v22pfh.mysql.zhangbei.rds.aliyuncs.com:3306/oio_prod?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: oio_prod
+    password: oio@prod123
+  redis:
+    database: 1
+    host: 127.0.0.1
+
+logging:
+  level:
+    indi.dbfmp.oio.oauth.core.mapper: error
+
+jwtRsaKeyPath: /app/oioCore/jwt.jks
+jwtRsaKey: 123456
+debug: false

@@ -37,7 +37,7 @@ public class EventCompensationScheduleService {
 
 
     @Async("updateMiddleTablePool")
-    @Scheduled(cron = "0 0/20 * * * ? ")
+    @Scheduled(cron = "0 0/2 * * * ? ")
     public void eventCompensation() {
         //查询10分钟之前更新，且是未终态的数据
         List<Event> eventList = eventInnerService.list(new LambdaQueryWrapper<Event>()

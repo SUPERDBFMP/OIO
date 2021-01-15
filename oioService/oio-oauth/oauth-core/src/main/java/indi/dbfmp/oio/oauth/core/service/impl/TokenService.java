@@ -55,6 +55,11 @@ public class TokenService {
     @Autowired
     private RedissonClient redissonClient;
 
+    @Value("${oioTokenTime}")
+    private Integer oioTokenTime;
+    @Value("${oioRefreshTokenTime}")
+    private Integer oioRefreshTokenTime;
+
     @Value("${jwtRsaKeyPath}")
     private String jwtRsaKeyPath;
     @Value("${jwtRsaKey}")
@@ -149,10 +154,10 @@ public class TokenService {
 
         try {
             this.initJwtKey();
-            String token = JwtTokenUtil.generateTokenByRSA(tokenPayLoad, JwtTokenUtil.getDefaultRSAKey(jwtKey, jwtRsaKey), 30 * 60);
-            String refreshToken = JwtTokenUtil.generateTokenByRSA(refreshTokenPayLoad, JwtTokenUtil.getDefaultRSAKey(jwtRsaKeyPath, jwtRsaKey), 120 * 60);
-            if (!redisUtil.set(StrUtil.format(TokenRedisConstants.TOKEN_KEY, oauthCodeDto.getUserId(), authCodeTokenDto.getAppType(), authCodeTokenDto.getClientId()), token, 30 * 60) ||
-                    !redisUtil.set(StrUtil.format(TokenRedisConstants.REFRESH_TOKEN_KEY, oauthCodeDto.getUserId(), authCodeTokenDto.getAppType(), authCodeTokenDto.getClientId()), refreshToken, 120 * 60)) {
+            String token = JwtTokenUtil.generateTokenByRSA(tokenPayLoad, JwtTokenUtil.getDefaultRSAKey(jwtKey, jwtRsaKey), oioTokenTime);
+            String refreshToken = JwtTokenUtil.generateTokenByRSA(refreshTokenPayLoad, JwtTokenUtil.getDefaultRSAKey(jwtRsaKeyPath, jwtRsaKey), oioRefreshTokenTime);
+            if (!redisUtil.set(StrUtil.format(TokenRedisConstants.TOKEN_KEY, oauthCodeDto.getUserId(), authCodeTokenDto.getAppType(), authCodeTokenDto.getClientId()), token, oioTokenTime) ||
+                    !redisUtil.set(StrUtil.format(TokenRedisConstants.REFRESH_TOKEN_KEY, oauthCodeDto.getUserId(), authCodeTokenDto.getAppType(), authCodeTokenDto.getClientId()), refreshToken, oioRefreshTokenTime)) {
                 redisUtil.del(StrUtil.format(TokenRedisConstants.TOKEN_KEY, oauthCodeDto.getUserId(), authCodeTokenDto.getAppType(),
                         authCodeTokenDto.getClientId()), StrUtil.format(TokenRedisConstants.REFRESH_TOKEN_KEY, oauthCodeDto.getUserId(), authCodeTokenDto.getAppType(), authCodeTokenDto.getClientId()));
                 throw new CommonException("储存token失败！");
@@ -162,7 +167,7 @@ public class TokenService {
             return TokenDto.builder()
                     .token(token)
                     .refreshToken(refreshToken)
-                    .expiresIn(30 * 60)
+                    .expiresIn(oioTokenTime)
                     .build();
         } catch (Exception e) {
             log.error("颁发token失败！", e);
@@ -250,7 +255,7 @@ public class TokenService {
                 return TokenDto.builder()
                         .token(token)
                         .refreshToken(refreshToken)
-                        .expiresIn(30 * 60)
+                        .expiresIn(oioTokenTime)
                         .build();
             }
             //保存旧tokenId
@@ -281,10 +286,10 @@ public class TokenService {
                     .build();
             tokenPayLoad.setOtherTokenId(refreshTokenPayLoad.getJti());
             refreshTokenPayLoad.setOtherTokenId(tokenPayLoad.getJti());
-            String token = JwtTokenUtil.generateTokenByRSA(tokenPayLoad, JwtTokenUtil.getDefaultRSAKey(jwtKey, jwtRsaKey), 30 * 60);
-            String refreshToken = JwtTokenUtil.generateTokenByRSA(refreshTokenPayLoad, JwtTokenUtil.getDefaultRSAKey(jwtRsaKeyPath, jwtRsaKey), 120 * 60);
-            if (!redisUtil.set(StrUtil.format(TokenRedisConstants.TOKEN_KEY, tokenPayLoad.getUserId(), tokenPayLoad.getAppType(), tokenPayLoad.getClientId()), token, 30 * 60) ||
-                    !redisUtil.set(StrUtil.format(TokenRedisConstants.REFRESH_TOKEN_KEY, tokenPayLoad.getUserId(), tokenPayLoad.getAppType(), tokenPayLoad.getClientId()), refreshToken, 120 * 60)) {
+            String token = JwtTokenUtil.generateTokenByRSA(tokenPayLoad, JwtTokenUtil.getDefaultRSAKey(jwtKey, jwtRsaKey), oioTokenTime);
+            String refreshToken = JwtTokenUtil.generateTokenByRSA(refreshTokenPayLoad, JwtTokenUtil.getDefaultRSAKey(jwtRsaKeyPath, jwtRsaKey), oioRefreshTokenTime);
+            if (!redisUtil.set(StrUtil.format(TokenRedisConstants.TOKEN_KEY, tokenPayLoad.getUserId(), tokenPayLoad.getAppType(), tokenPayLoad.getClientId()), token, oioTokenTime) ||
+                    !redisUtil.set(StrUtil.format(TokenRedisConstants.REFRESH_TOKEN_KEY, tokenPayLoad.getUserId(), tokenPayLoad.getAppType(), tokenPayLoad.getClientId()), refreshToken, oioRefreshTokenTime)) {
                 redisUtil.del(StrUtil.format(TokenRedisConstants.TOKEN_KEY, tokenPayLoad.getUserId(), tokenPayLoad.getAppType(),
                         tokenPayLoad.getClientId()), StrUtil.format(TokenRedisConstants.REFRESH_TOKEN_KEY, tokenPayLoad.getUserId(), tokenPayLoad.getAppType(), tokenPayLoad.getClientId()));
                 throw new CommonException("储存token失败！");
@@ -292,7 +297,7 @@ public class TokenService {
             return TokenDto.builder()
                     .token(token)
                     .refreshToken(refreshToken)
-                    .expiresIn(30 * 60)
+                    .expiresIn(oioTokenTime)
                     .build();
         } catch (MalformedURLException | JOSEException e) {
             log.error("颁发token失败！",e);

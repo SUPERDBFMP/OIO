@@ -40,14 +40,11 @@ public class PermissionUpdateEventListener implements RecoveryEvent<PermissionUp
     @Autowired
     private IEventInnerService eventInnerService;
 
+    @Override
     public void eventAction(PermissionUpdateEvent updateEvent) {
         log.info("收到permission更新事件,permissionUpdateEvent:{}", updateEvent);
-        if (StrUtil.isBlank(updateEvent.getId())) {
-            log.warn("permissionUpdateEvent,警告！更新事件主键id为空！");
-            return;
-        }
         Event event = new Event();
-
+        event.setId(updateEvent.getEventId());
         event.setEventStatus(EventStatus.PROCESSING.name());
         eventInnerService.updateById(event);
         RolePermission rolePermission = RolePermission.builder().permissionId(updateEvent.getId()).permissionName(updateEvent.getPermissionName()).build();

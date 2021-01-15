@@ -61,3 +61,6 @@ management:
         include: "*"
 
 oio.defaultPassword: '123456'
+
+oioTokenTime: 7200
+oioRefreshTokenTime: 86400

@@ -39,13 +39,11 @@ public class RolesUpdateEventListener implements RecoveryEvent<RolesUpdateEvent>
     @Autowired
     private IEventInnerService eventInnerService;
 
+    @Override
     public void eventAction(RolesUpdateEvent updateEvent) {
         log.info("收到role更新事件,roleUpdateEvent:{}", updateEvent);
-        if (StrUtil.isBlank(updateEvent.getId())) {
-            log.warn("roleUpdateEvent,警告！更新事件主键id为空！");
-            return;
-        }
         Event event = new Event();
+        event.setId(updateEvent.getEventId());
         event.setEventStatus(EventStatus.PROCESSING.name());
         eventInnerService.updateById(event);
         GroupRole groupRole = GroupRole.builder().roleId(updateEvent.getId()).roleName(updateEvent.getRoleName()).build();

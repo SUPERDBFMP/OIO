@@ -67,11 +67,8 @@ public class GroupsUpdateEventListener implements RecoveryEvent<GroupsUpdateEven
     @Override
     public void eventAction(GroupsUpdateEvent groupsUpdateEvent) {
         log.info("收到group更新事件,groupsUpdateEvent:{}", groupsUpdateEvent);
-        if (StrUtil.isBlank(groupsUpdateEvent.getId())) {
-            log.warn("groupsUpdateEvent,警告！更新事件主键id为空！");
-            return;
-        }
         Event event = new Event();
+        event.setId(groupsUpdateEvent.getEventId());
         event.setEventStatus(EventStatus.PROCESSING.name());
         eventInnerService.updateById(event);
         GroupRole groupRole = GroupRole.builder().groupId(groupsUpdateEvent.getId()).groupName(groupsUpdateEvent.getGroupName()).build();
