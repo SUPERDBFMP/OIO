@@ -28,4 +28,18 @@ public interface DubboAuthService {
      */
     boolean permissionCheck(PermissionCheck permissionCheck);
 
+    /**
+     * 检查用户是否开启两步认证
+     * @param userId
+     * @return 是否开启两步认证
+     */
+    boolean checkOpenTowStepAuth(String userId);
+
+    /**
+     * 检查用户两步认证码是否正确
+     * @param userId 用户ID
+     * @param code 验证码
+     */
+    void codeValid(String userId,int code);
+
 }

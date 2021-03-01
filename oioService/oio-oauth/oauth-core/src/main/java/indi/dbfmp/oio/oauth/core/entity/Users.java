@@ -84,6 +84,23 @@ public class Users extends BaseEntity {
      */
     private Integer defaultPwd;
 
+    /**
+     * 是否开启两步认证：1是，0否
+     */
+    private Integer openTowStepAuth;
+
+    /**
+     * 两步认证秘钥
+     */
+    private String authKey;
+
+    /**
+     * 两步认证URL
+     */
+    private String authUrl;
+
+
+
 
     public static final String USER_ID = "user_id";
 
@@ -104,5 +121,11 @@ public class Users extends BaseEntity {
     public static final String LOGIN_FLAG = "login_flag";
 
     public static final String DEFAULT_PWD = "default_pwd";
+
+    public static final String OPEN_TOW_STEP_AUTH = "open_Tow_Step_Auth";
+
+    public static final String AUTH_KEY = "auth_Key";
+
+    public static final String AUTH_URL = "auth_Url";
 
 }

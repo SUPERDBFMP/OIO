@@ -7,7 +7,7 @@
     <groupId>indi.dbfmp</groupId>
     <artifactId>oioService</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>1.1.0-SNAPSHOT</version>
     <modules>
         <module>oio-oauth</module>
         <module>oio-gateway</module>
@@ -113,6 +113,12 @@
                 <groupId>indi.dbfmp</groupId>
                 <artifactId>spring-boot-validator-starter</artifactId>
                 <version>${spring-boot-validator-starter}</version>
+            </dependency>
+            <!-- 谷歌验证器 -->
+            <dependency>
+                <groupId>com.warrenstrange</groupId>
+                <artifactId>googleauth</artifactId>
+                <version>1.4.0</version>
             </dependency>
 
         </dependencies>
