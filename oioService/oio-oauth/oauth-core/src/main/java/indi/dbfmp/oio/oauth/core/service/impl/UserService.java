@@ -12,10 +12,12 @@ import indi.dbfmp.oio.oauth.core.entity.Users;
 import indi.dbfmp.oio.oauth.core.innerService.IUserPermissionInnerService;
 import indi.dbfmp.oio.oauth.core.innerService.IUserRoleInnerService;
 import indi.dbfmp.oio.oauth.core.interceptor.UserInfoContext;
+import indi.dbfmp.oio.oauth.core.service.transaction.UserServiceTransaction;
 import inid.dbfmp.oauth.api.dto.PayloadDto;
 import inid.dbfmp.oauth.api.exception.CommonException;
 import indi.dbfmp.oio.oauth.core.innerService.IUsersInnerService;
 import inid.dbfmp.oauth.api.enums.StatusEnums;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,17 +36,22 @@ import java.util.List;
  * @since 2020/11/28 下午5:31
  */
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class UserService {
 
     @Value("${oio.defaultPassword}")
     private String defaultPassword;
-    @Autowired
-    private IUsersInnerService usersInnerService;
-    @Autowired
-    private IUserRoleInnerService userRoleInnerService;
-    @Autowired
-    private IUserPermissionInnerService userPermissionInnerService;
+
+    private final IUsersInnerService usersInnerService;
+
+    private final IUserRoleInnerService userRoleInnerService;
+
+    private final IUserPermissionInnerService userPermissionInnerService;
+
+    private final GoogleAuthenticatorService googleAuthenticatorService;
+
+    private final UserServiceTransaction userServiceTransaction;
 
     /**
      * 使用默认密码设置新密码
@@ -126,6 +133,27 @@ public class UserService {
         }
         userInfoDto.setUserPermissionList(userPermissionDtoList);
         return userInfoDto;
+    }
+
+    public void delUser(String opUserId,String delUserId, int code) {
+        log.info("删除用户信息，opUserId:{},delUserId:{},code:{}",opUserId,delUserId,code);
+        if (opUserId.equals(delUserId)) {
+            throw new CommonException("不能删除自己！");
+        }
+        Users opUser = usersInnerService.getById(opUserId);
+        if (null == opUser) {
+            throw new CommonException("操作用户不存在！");
+        }
+        if (StatusEnums.VALID.getCode() != opUser.getLoginFlag()) {
+            throw new CommonException("您被封禁了，不能操作！");
+        }
+        if (StatusEnums.VALID.getCode() != opUser.getOpenTowStepAuth()) {
+            throw new CommonException("请开启两步认证才能操作！");
+        }
+        //验证验证码
+        googleAuthenticatorService.codeValid(opUserId,code);
+        //删除用户
+        userServiceTransaction.delUser(delUserId);
     }
 
 }

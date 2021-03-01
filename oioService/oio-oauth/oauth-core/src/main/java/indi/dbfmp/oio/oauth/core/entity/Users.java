@@ -122,7 +122,7 @@ public class Users extends BaseEntity {
 
     public static final String DEFAULT_PWD = "default_pwd";
 
-    public static final String OPEN_TOW_STEP_AUTH = "open_Tow_Step_Auth";
+    public static final String OPEN_TOW_STEP_AUTH = "open_tow_step_auth";
 
     public static final String AUTH_KEY = "auth_Key";
 
