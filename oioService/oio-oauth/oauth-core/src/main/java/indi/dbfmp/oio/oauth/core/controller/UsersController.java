@@ -41,6 +41,11 @@ public class UsersController {
         return CommonResult.success(userService.getUserInfo());
     }
 
+    @RequestMapping("/getUserAccount")
+    public CommonResult<?> getUserAccount() {
+        return CommonResult.success(userService.getUserAccount());
+    }
+
     @RequestMapping("/registerTowAuthCode")
     public CommonResult<?> registerTowAuthCode() {
         return CommonResult.success(googleAuthenticatorService.register());

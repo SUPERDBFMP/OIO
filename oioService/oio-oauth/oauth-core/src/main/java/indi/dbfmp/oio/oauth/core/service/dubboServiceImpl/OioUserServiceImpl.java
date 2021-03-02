@@ -1,6 +1,8 @@
 package indi.dbfmp.oio.oauth.core.service.dubboServiceImpl;
 
 import indi.dbfmp.oio.oauth.core.service.impl.UserService;
+import indi.dbfmp.web.common.exception.DubboCommonException;
+import inid.dbfmp.oauth.api.exception.CommonException;
 import inid.dbfmp.oauth.api.service.OioUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +33,12 @@ public class OioUserServiceImpl implements OioUserService {
      * @param code   操作用户两步认证码
      */
     @Override
-    public void delUser(String opUserId,String delUserId, int code) {
-        userService.delUser(opUserId, delUserId, code);
+    public void delUser(String opUserId,String delUserId, int code) throws DubboCommonException {
+        try {
+            userService.delUser(opUserId, delUserId, code);
+        } catch (CommonException e) {
+            throw new DubboCommonException(e.getMessage());
+        }
+
     }
 }

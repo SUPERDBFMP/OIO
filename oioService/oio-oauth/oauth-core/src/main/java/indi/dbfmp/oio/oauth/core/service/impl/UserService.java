@@ -6,6 +6,7 @@ import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import indi.dbfmp.oio.oauth.core.dto.webDto.ResetPwdDto;
 import indi.dbfmp.oio.oauth.core.dto.webDto.UserInfoDto;
+import indi.dbfmp.oio.oauth.core.dto.webDto.UsersAccountInfoDto;
 import indi.dbfmp.oio.oauth.core.entity.UserPermission;
 import indi.dbfmp.oio.oauth.core.entity.UserRole;
 import indi.dbfmp.oio.oauth.core.entity.Users;
@@ -154,6 +155,20 @@ public class UserService {
         googleAuthenticatorService.codeValid(opUserId,code);
         //删除用户
         userServiceTransaction.delUser(delUserId);
+    }
+
+    public UsersAccountInfoDto getUserAccount() {
+        PayloadDto userContext = UserInfoContext.getUserInfo();
+        if (null == userContext) {
+            return new UsersAccountInfoDto();
+        }
+        Users queryUser = usersInnerService.getOne(new LambdaQueryWrapper<Users>().eq(Users::getId,userContext.getUserId()));
+        if (null == queryUser) {
+            return new UsersAccountInfoDto();
+        }
+        UsersAccountInfoDto dto = new UsersAccountInfoDto();
+        BeanUtil.copyProperties(queryUser,dto);
+        return dto;
     }
 
 }
