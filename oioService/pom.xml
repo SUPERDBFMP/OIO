@@ -31,7 +31,7 @@
         <spring.boot.admin>2.1.0</spring.boot.admin>
         <dbfmpCommon.version>1.0.0</dbfmpCommon.version>
         <dbfmpCommon.web-version>1.0.0</dbfmpCommon.web-version>
-        <mysql-connector-version>8.0.18</mysql-connector-version>
+        <mysql-connector-version>8.0.28</mysql-connector-version>
         <spring-boot-validator-starter>1.0.0-SNAPSHOT</spring-boot-validator-starter>
     </properties>
 
